@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.11
+// @version      0.1.12
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.11';
+    const VERSION = '0.1.12';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -35,9 +35,9 @@
         roast:['👑 _samara_ enters. Oce, darling, your ego needs its own fucking postcode.','🏛️ The goddess arrives. Oce is still polishing his imaginary crown.','💋 _samara_ appears. Somebody tell Oce that being loud is not a royal qualification.']
       },
       oce: {
-        clean:['👑 King Oceileachair arrives! The peasants may now resume breathing.','⚔️ Hear ye! Oce enters, and modesty immediately leaves the kingdom.','🏰 Make way for King Oce! His ego required a separate carriage.'],
-        adult:['👑 King Oce has arrived, you magnificent bastards. Bow or be mildly inconvenienced.','⚔️ Oce storms in. His royal decree: less whining, more worshipping, fuckers.','🏰 The king enters. Yes, his ego is bigger than this entire damn faction.'],
-        roast:['👑 Oce enters. _samara_, darling, Olympus called: they want their attitude back.','⚔️ The king arrives. _samara_ may be a goddess, but she still steals my spotlight.','🏰 Oce proclaims: _samara_ is welcome, provided she stops rearranging my throne.']
+        clean:['👑 King Oceileachair arrives! The peasants may now resume breathing.','⚔️ Hear ye! Oce enters, and modesty immediately leaves the kingdom.','🏰 Make way for King Oce! His ego required a separate carriage.',"🍷 King Oce enters with a fine vintage and a song he wrote for _samara_.","🎶 The king arrives humming a ballad and inviting the kingdom to dance."],
+        adult:['👑 King Oce has arrived, you magnificent bastards. Bow or be mildly inconvenienced.','⚔️ Oce storms in. His royal decree: less whining, more worshipping, fuckers.','🏰 The king enters. Yes, his ego is bigger than this entire damn faction.',"🍷 Oce raises his goblet: 'To good wine, loud music, and you magnificent bastards!'","🎤 The king is three songs deep and does not give a damn who requested an encore."],
+        roast:['👑 Oce enters. _samara_, darling, Olympus called: they want their attitude back.','⚔️ The king arrives. _samara_ may be a goddess, but she still steals my spotlight.','🏰 Oce proclaims: _samara_ is welcome, provided she stops rearranging my throne.',"🎶 Oce sings a love song for _samara_; she says the wine deserves most of the credit.","🍷 The king insists he can sing. _samara_ generously calls it enthusiasm."]
       }
     };
     // Scene pieces create one continuous arrival, not repeated entrances.
@@ -50,11 +50,11 @@
         adult:['Oce can keep his fucking crown; _samara_ owns the spotlight.','The peasants can stop their bullshit and start applauding.','Kneel, bitches. Divine trouble has officially arrived.',"She takes one look at the chaos and declares it a spectacular fucking mess.","Oce's royal bullshit is officially beneath her divine pay grade.","One smirk later, every poor bastard in the room forgets how to behave."]
       },
       oce:{
-        opening:['👑 Trumpets blare as King Oceileachair strides through the castle gates, radiating entirely too much confidence.','⚔️ The royal doors burst open and Oce arrives like the kingdom has been waiting all century.','🏰 A procession of questionable grandeur announces the arrival of King Oce.',"🎺 Twelve trumpeters announce King Oce. Eleven are just there for his ego.","🦚 Oce struts through the gates like a peacock that inherited a castle.","🏰 Oce rides in atop a magnificent steed. The horse requests hazard pay."],
-        buildup:['The peasants gasp, the banners flutter, and his reflection demands an encore.','Servants rush for the throne while his ego requests a larger castle.','The kingdom holds its breath, unsure whether to cheer or seek shelter.',"The royal mirror is polished, the throne elevated, and humility nowhere to be found.","A choir sings his praises. He insists they start over with more feeling.","His cape gets caught in the doorway; the king declares it a dramatic pause."],
+        opening:['👑 Trumpets blare as King Oceileachair strides through the castle gates, radiating entirely too much confidence.','⚔️ The royal doors burst open and Oce arrives like the kingdom has been waiting all century.','🏰 A procession of questionable grandeur announces the arrival of King Oce.',"🎺 Twelve trumpeters announce King Oce. Eleven are just there for his ego.","🦚 Oce struts through the gates like a peacock that inherited a castle.","🏰 Oce rides in atop a magnificent steed. The horse requests hazard pay.","🍷 Oce sweeps into the great hall with a goblet in hand and a song on his lips.","🎶 The royal musicians strike up a tune as Oce enters, already singing along.","🌹 Oce arrives with a bottle of wine and a love ballad for his favorite goddess."],
+        buildup:['The peasants gasp, the banners flutter, and his reflection demands an encore.','Servants rush for the throne while his ego requests a larger castle.','The kingdom holds its breath, unsure whether to cheer or seek shelter.',"The royal mirror is polished, the throne elevated, and humility nowhere to be found.","A choir sings his praises. He insists they start over with more feeling.","His cape gets caught in the doorway; the king declares it a dramatic pause.","The wine flows freely, and the whole court joins the chorus.","He invites _samara_ to dance as the orchestra finds its rhythm.","His favorite melody fills the hall, followed by laughter and raised glasses."],
         roast:['_samara_ rolls her eyes so hard Olympus feels the tremor.','Somewhere, _samara_ is preparing a devastating review of his entrance.','_samara_ threatens to replace his crown with a decorative flowerpot.',"_samara_ takes one look at the parade and asks if the circus is hiring.","_samara_ offers to polish his crown with the last shred of his dignity.","_samara_ watches the royal spectacle and requests a refund."],
-        finale:['Bow respectfully. The king is feeling almost generous today.','Let the royal nonsense commence. Long live the king!','His majesty has spoken. Applause is strongly encouraged.',"Long live the king. And whoever keeps him away from the mirrors.","His majesty accepts applause, tribute, and flattering portraits.","Let history record this as the kingdom's loudest entrance."],
-        adult:['The king has arrived, you magnificent bastards.','Anyone objecting may take their bullshit to the dungeon.','Bow, fuckers. Royal chaos is now in session.',"Oce surveys his subjects: 'What a magnificent bunch of fuckups.'","Anyone questioning his greatness can piss off to the moat.","Even _samara_ cannot stop this glorious shitshow, and she has tried."]
+        finale:['Bow respectfully. The king is feeling almost generous today.','Let the royal nonsense commence. Long live the king!','His majesty has spoken. Applause is strongly encouraged.',"Long live the king. And whoever keeps him away from the mirrors.","His majesty accepts applause, tribute, and flattering portraits.","Let history record this as the kingdom's loudest entrance.","To wine, song, and _samara_—the finest treasures a king could ask for!","The king lifts his goblet and dedicates the final verse to his goddess.","Let the music play until sunrise and the wine last until the last dance."],
+        adult:['The king has arrived, you magnificent bastards.','Anyone objecting may take their bullshit to the dungeon.','Bow, fuckers. Royal chaos is now in session.',"Oce surveys his subjects: 'What a magnificent bunch of fuckups.'","Anyone questioning his greatness can piss off to the moat.","Even _samara_ cannot stop this glorious shitshow, and she has tried.","Oce raises his glass: 'Here's to love, music, and a damn good night!'","The king belts out a gloriously off-key chorus, and nobody dares stop him."]
       }
     };
     const royalLove={
@@ -144,6 +144,9 @@
         "💋 Oce brings the crown, _samara_ brings the thunder, and together they steal the show."
     ]
 };
+    const royalCoupleScenarios={"argument":[["⚔️ Oce declares the banquet his greatest achievement.","_samara_ reminds him she arranged the wine and hired the musicians.","He surrenders with a song and a kiss.","The court agrees they argue like royalty and love like legends."],["🍷 Oce demands another goblet before performing his royal ballad.","_samara_ says he must remember the lyrics first.","He improvises a verse about his goddess and makes her laugh.","They toast their beautiful, ridiculous kingdom."]],"power":[["🎶 Trumpets announce _samara_ and Oce arriving arm in arm.","She commands the thunder; he commands the orchestra.","They lead the entire court in a toast and a triumphant song.","Tonight, their love and laughter rule the kingdom."],["👑 The goddess and her king stride into the feast together.","Oce pours the wine while _samara_ starts the dancing.","Their guests abandon protocol and join the celebration.","Even Olympus wishes it had received an invitation."]],"love":[["🌹 Oce waits beneath the balcony singing a song for _samara_.","She descends from Olympus before the final verse.","They share a slow dance as the castle lights turn golden.","For once, neither needs a crown to feel like royalty."],["❤️ _samara_ finds Oce with two glasses of wine and a melody written for her.","He admits he practiced all afternoon and forgot the middle verse.","She kisses his cheek and hums the missing notes.","The song becomes theirs, imperfect and beautiful."]],"flirty":[["💋 _samara_ catches Oce singing a suspiciously romantic tune over his wine.","He claims it is a royal anthem; every verse is about her.","She promises him a private encore if he dances with her.","The musicians suddenly remember they have somewhere else to be."],["🍷 Oce offers his goddess wine and an outrageously theatrical bow.","_samara_ asks if he plans to charm her or embarrass himself.","He replies, 'Why not both?' and pulls her into a dance.","She laughs, kisses him, and calls it a draw."]],"disaster":[["🍷 Oce's grand entrance begins with spilled wine and a trumpet playing the wrong song.","_samara_ catches his crown before it rolls under the table.","He declares the chaos an intentional comedy performance.","She kisses his forehead and orders another round."],["🎤 The king attempts a serenade, but the orchestra starts three verses early.","_samara_ tries to help and trips over his royal cape.","They collapse into laughter as the court cheers.","It is a disaster, a duet, and their best night yet."]],"twist":[["🎶 The court expects another speech from Oce, but he picks up a lute.","_samara_ joins him with a verse nobody knew she wrote.","The musicians stop playing and let the couple take over.","By the final chorus, the whole kingdom sings along."],["🍷 _samara_ announces that Oce must surrender his crown.","The king gasps until she replaces it with a wreath of roses.","He declares her queen of every love song ever written.","They toast the new reign and dance into the night."]]};
+    const royalRecent=new Map();
+    function royalChoose(key,items){const old=royalRecent.get(key)||[];const pool=items.filter(x=>!old.includes(x));const pick=(pool.length?pool:items)[Math.floor(Math.random()*(pool.length||items.length))];royalRecent.set(key,[...old,pick].slice(-Math.max(1,items.length-1)));return pick;}
     let royalLast = '';
     function openRoyal(box,input) {
       document.getElementById('chatiq-royal-panel')?.remove();
@@ -151,6 +154,7 @@
       const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
       const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce'],['couple','_samara_ + Oce — Royal Couple ❤️']]){const o=el('option',label);o.value=value;character.append(o);}
       const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts'],['love','Loving / Romantic ❤️']]){const o=el('option',label);o.value=value;rating.append(o);}
+      const scenario=el('select');for(const [v,label] of [['surprise','Surprise Me 🎲'],['argument','Royal Argument ⚔️'],['power','Power Couple 👑'],['love','Hopelessly in Love ❤️'],['flirty','Flirty Chaos 💋'],['disaster','Royal Disaster 🍷'],['twist','Unexpected Plot Twist 🎶']]){const o=el('option',label);o.value=v;scenario.append(o);}const updateScenario=()=>{scenario.style.display=character.value==='couple'?'':'none';};character.addEventListener('change',updateScenario);updateScenario();
       const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
       const preview=el('textarea');preview.rows=5;
       const counter=el('div');counter.style.cssText='font-size:12px;text-align:right;color:#d5c5eb;margin:3px 0';
@@ -160,23 +164,16 @@
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
       const generate=()=>{
         if(character.value==='couple'){
-          const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
-          const mode=rating.value;
-          const category=mode==='love'?'love':mode==='roast'?'roast':mode==='adult'?'adult':mode==='mixed'?pick(['clean','adult','roast','love']):'clean';
-          const story=[pick(royalCouple.opening),pick(royalCouple.buildup)];
-          if(length.value==='short'){
-            const pool=royalCouple.short.filter(x=>x!==royalLast);
-            royalLast=pick(pool.length?pool:royalCouple.short);
-            preview.value=royalLast;count();return;
-          }
-          story.push(pick(royalCouple[category]));
-          if(length.value==='long'||length.value==='epic')story.push(pick(royalCouple.finale));
-          if(length.value==='epic'){
-            const second=mode==='mixed'?pick(['adult','roast','love','clean']):category;
-            const options=royalCouple[second].filter(x=>x!==story[2]);
-            story.splice(3,0,pick(options.length?options:royalCouple[second]));
-          }
-          preview.value=story.join(' ');count();return;
+          const types=Object.keys(royalCoupleScenarios);
+          const type=scenario.value==='surprise'?royalChoose('couple-types',types):scenario.value;
+          const stories=royalCoupleScenarios[type];
+          const index=royalChoose('couple-'+type,stories.map((_,i)=>i));
+          const story=stories[index].slice();
+          if(rating.value==='adult')story[2]+=' Their flirting is getting damn shameless.';
+          else if(rating.value==='roast')story[2]+=' They never miss a chance to tease each other.';
+          else if(rating.value==='love')story[2]+=' Their love needs no royal decree.';
+          else if(rating.value==='mixed'&&Math.random()<0.5)story[2]+=' The court knows these two are trouble.';
+          preview.value=story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' ');count();return;
         }
         const lines=royalLines[character.value];const loving=rating.value==='love';const pool=loving?royalLove[character.value].short:(rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value]);
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
@@ -204,7 +201,7 @@
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,rating,length,preview,counter,note,regen,use,close);
+      panel.append(header,character,rating,scenario,length,preview,counter,note,regen,use,close);
       document.body.append(panel);generate();
     }
 
