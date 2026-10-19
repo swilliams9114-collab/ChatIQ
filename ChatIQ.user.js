@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.21
+// @version      0.1.22
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.21';
+    const VERSION = '0.1.22';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -199,11 +199,38 @@
       const memberLabel=el('div','🎯 Faction member to roast (optional)');memberLabel.style.cssText='font-size:12px;font-weight:bold;margin-top:6px';
       const personality=el('select');for(const [v,label] of [['balanced','Personality: Balanced 🎭'],['wine','Wine & Song 🍷🎶'],['bot','OceBot 🤖 Beep Boop'],['romantic','Extra Romantic ❤️'],['savage','Extra Savage 🔥']]){const o=el('option',label);o.value=v;personality.append(o);}
       const intensity=el('select');for(const [v,label] of [['light','Humor: Light'],['medium','Humor: Medium'],['wild','Humor: Wild']]){const o=el('option',label);o.value=v;intensity.append(o);}
-      const saved=(()=>{try{return JSON.parse(localStorage.getItem('chatiq_royal_preferences_v1')||'{}')}catch(_){return {}}})();
-      if(saved.personality&&[...personality.options].some(o=>o.value===saved.personality))personality.value=saved.personality;
-      if(saved.intensity&&[...intensity.options].some(o=>o.value===saved.intensity))intensity.value=saved.intensity;
-      const savePrefs=()=>{try{localStorage.setItem('chatiq_royal_preferences_v1',JSON.stringify({personality:personality.value,intensity:intensity.value}))}catch(_){}};
-      personality.addEventListener('change',savePrefs);intensity.addEventListener('change',savePrefs);
+      const legacyPrefs=(()=>{try{return JSON.parse(localStorage.getItem('chatiq_royal_preferences_v1')||'{}')}catch(_){return {}}})();
+      const characterPrefsKey='chatiq_royal_character_prefs_v1';
+      const readCharacterPrefs=()=>{try{const data=JSON.parse(localStorage.getItem(characterPrefsKey)||'{}');return data&&typeof data==='object'?data:{}}catch(_){return {}}};
+      const defaults={rating:'mixed',scenario:'surprise',length:'medium',personality:'balanced',intensity:'medium',dramaTopic:'surprise',dramaLevel:'playful',dialogue:false,partner:false};
+      const fields={rating,scenario,length,personality,intensity,dramaTopic,dramaLevel};
+      let activeCharacter=character.value;
+      const saveCharacterPrefs=()=>{
+        const all=readCharacterPrefs();const record={};
+        for(const [key,control] of Object.entries(fields))record[key]=control.value;
+        record.dialogue=dialogueCheck.checked;record.partner=partnerCheck.checked;
+        all[activeCharacter]=record;
+        try{localStorage.setItem(characterPrefsKey,JSON.stringify(all))}catch(_){}
+      };
+      const loadCharacterPrefs=(who)=>{
+        const all=readCharacterPrefs();
+        const prefs=all[who]||((who==='sam')?{...defaults,personality:legacyPrefs.personality||'balanced',intensity:legacyPrefs.intensity||'medium'}:defaults);
+        for(const [key,control] of Object.entries(fields)){
+          const value=prefs[key]??defaults[key];
+          if([...control.options].some(option=>option.value===value))control.value=value;
+        }
+        dialogueCheck.checked=!!prefs.dialogue;
+        partnerCheck.checked=!!prefs.partner;
+        activeCharacter=who;
+        updateScenario();showDialogue();showDrama();updatePartner();
+      };
+      character.addEventListener('change',()=>{saveCharacterPrefs();loadCharacterPrefs(character.value)});
+      for(const control of Object.values(fields))control.addEventListener('change',saveCharacterPrefs);
+      dialogueCheck.addEventListener('change',saveCharacterPrefs);
+      partnerCheck.addEventListener('change',saveCharacterPrefs);
+      loadCharacterPrefs(activeCharacter);
+      const profileNote=el('div','⚙️ Entrance settings saved separately for each character on this device.');
+      profileNote.style.cssText='font-size:11px;color:#c9b8d9;margin:3px 0';
       const preview=el('textarea');preview.rows=5;
       const counter=el('div');counter.style.cssText='font-size:12px;text-align:right;color:#d5c5eb;margin:3px 0';
       const limit=input.maxLength>0?input.maxLength:null;
@@ -344,7 +371,7 @@
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,rating,scenario,dialogue,dramaTopic,dramaLevel,length,partner,personality,intensity,memberLabel,target,preview,counter,note,favSave,favToggle,favArea,regen,use,close);
+      panel.append(header,character,profileNote,rating,scenario,dialogue,dramaTopic,dramaLevel,length,partner,personality,intensity,memberLabel,target,preview,counter,note,favSave,favToggle,favArea,regen,use,close);
       document.body.append(panel);generate();
     }
 
