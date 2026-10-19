@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.10
+// @version      0.1.11
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.10';
+    const VERSION = '0.1.11';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -107,12 +107,49 @@
         ]
       }
     };
+    const royalCouple = {
+    "opening": [
+        "👑 The castle doors open as _samara_ and Oce enter together: one divine goddess, one spectacularly confident king.",
+        "❤️ Olympus meets the royal court when _samara_ takes Oce by the hand.",
+        "⚡ Thunder rolls, trumpets blare, and the kingdom braces itself: _samara_ and Oce have arrived."
+    ],
+    "buildup": [
+        "He offers her his throne; she reminds him it was hers the moment she walked in.",
+        "The crowd bows, though nobody is sure which of them demanded it.",
+        "He adjusts his crown, she adjusts his attitude, and somehow they still look hopelessly in love."
+    ],
+    "clean": [
+        "Together they rule with affection, mischief, and questionable judgment.",
+        "Oce brings the fanfare; _samara_ brings the thunder. The kingdom gets both."
+    ],
+    "adult": [
+        "Oce announces he is in charge. _samara_ laughs: 'That is adorable as fuck, darling.'",
+        "The kingdom is officially screwed, and these two are enjoying every second."
+    ],
+    "roast": [
+        "_samara_ asks Oce whether his crown came with instructions for that enormous ego.",
+        "Oce calls himself the greatest king alive; _samara_ politely asks for evidence."
+    ],
+    "love": [
+        "For all their teasing, he is her home and she is his favorite miracle.",
+        "Their hands find each other without thinking; some promises never need words."
+    ],
+    "finale": [
+        "Long live the goddess, the king, and the glorious chaos they call love.",
+        "Together, they are trouble with a crown—and neither would have it any other way."
+    ],
+    "short": [
+        "❤️ _samara_ and Oce arrive together: one heart, two crowns, unlimited chaos.",
+        "👑 The goddess and her king have entered. Romance and trouble are now in session.",
+        "💋 Oce brings the crown, _samara_ brings the thunder, and together they steal the show."
+    ]
+};
     let royalLast = '';
     function openRoyal(box,input) {
       document.getElementById('chatiq-royal-panel')?.remove();
       const panel=el('div',undefined,'chatiq-royal-panel');panel.id='chatiq-royal-panel';
       const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
-      const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']]){const o=el('option',label);o.value=value;character.append(o);}
+      const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce'],['couple','_samara_ + Oce — Royal Couple ❤️']]){const o=el('option',label);o.value=value;character.append(o);}
       const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts'],['love','Loving / Romantic ❤️']]){const o=el('option',label);o.value=value;rating.append(o);}
       const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
       const preview=el('textarea');preview.rows=5;
@@ -122,6 +159,25 @@
       preview.addEventListener('input',count);
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
       const generate=()=>{
+        if(character.value==='couple'){
+          const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+          const mode=rating.value;
+          const category=mode==='love'?'love':mode==='roast'?'roast':mode==='adult'?'adult':mode==='mixed'?pick(['clean','adult','roast','love']):'clean';
+          const story=[pick(royalCouple.opening),pick(royalCouple.buildup)];
+          if(length.value==='short'){
+            const pool=royalCouple.short.filter(x=>x!==royalLast);
+            royalLast=pick(pool.length?pool:royalCouple.short);
+            preview.value=royalLast;count();return;
+          }
+          story.push(pick(royalCouple[category]));
+          if(length.value==='long'||length.value==='epic')story.push(pick(royalCouple.finale));
+          if(length.value==='epic'){
+            const second=mode==='mixed'?pick(['adult','roast','love','clean']):category;
+            const options=royalCouple[second].filter(x=>x!==story[2]);
+            story.splice(3,0,pick(options.length?options:royalCouple[second]));
+          }
+          preview.value=story.join(' ');count();return;
+        }
         const lines=royalLines[character.value];const loving=rating.value==='love';const pool=loving?royalLove[character.value].short:(rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value]);
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
         if(length.value==='short'){preview.value=royalLast;count();return;}
