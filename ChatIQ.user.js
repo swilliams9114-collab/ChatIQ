@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.13
+// @version      0.1.14
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.13';
+    const VERSION = '0.1.14';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -163,6 +163,22 @@
       name=>`🎶 Oce wrote ${name} a song. _samara_ says the chorus needs fewer bad decisions.`,
       name=>`🏰 The royal herald announces ${name}. The court immediately hides the good wine.`
     ];
+    const royalSavageRoasts=[
+      name=>`🔥 ${name} arrived with the confidence of a legend and the decision-making of a drunk pigeon. _samara_ requests a refund.`,
+      name=>`👑 ${name} has the royal court in stitches. Not because they're funny—because their life choices are a fucking comedy.`,
+      name=>`🍷 Oce raises a glass to ${name}: the only guest who can turn a simple entrance into a full-blown royal investigation.`,
+      name=>`⚡ Olympus examined ${name}'s latest disaster and unanimously voted to pretend they never met.`,
+      name=>`🤖 BEEP BOOP. Scanning ${name}. Common sense: offline. Chaos: maximum. Wine: strongly recommended.`,
+      name=>`🏰 ${name} walked into the castle like a champion. Even the court jester whispered, 'Well, shit. I've been replaced.'`
+    ];
+    const royalWildRoasts=[
+      name=>`🔥 ${name} entered the royal hall and somehow lowered the average IQ of the furniture. Oce nearly choked on his wine.`,
+      name=>`🤖 BEEP BOOP. ${name} detected. Error 404: dignity not found. _samara_ has ordered the castle gates locked for everyone's safety.`,
+      name=>`🍷 Oce wrote a ballad about ${name}'s bullshit. It has seventeen verses and not one redeeming character arc.`,
+      name=>`⚡ Zeus threw a thunderbolt at ${name}, missed on purpose, and said, 'Even I have standards.'`,
+      name=>`👑 ${name} requested royal treatment. _samara_ offered a court-appointed babysitter and a fucking instruction manual.`,
+      name=>`🎶 The orchestra composed a theme song for ${name}: three minutes of circus music followed by an emergency evacuation.`
+    ];
     let royalLast = '';
     function openRoyal(box,input) {
       document.getElementById('chatiq-royal-panel')?.remove();
@@ -172,7 +188,8 @@
       const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts'],['love','Loving / Romantic ❤️']]){const o=el('option',label);o.value=value;rating.append(o);}
       const scenario=el('select');for(const [v,label] of [['surprise','Surprise Me 🎲'],['argument','Royal Argument ⚔️'],['power','Power Couple 👑'],['love','Hopelessly in Love ❤️'],['flirty','Flirty Chaos 💋'],['disaster','Royal Disaster 🍷'],['twist','Unexpected Plot Twist 🎶']]){const o=el('option',label);o.value=v;scenario.append(o);}const updateScenario=()=>{scenario.style.display=character.value==='couple'?'':'none';};character.addEventListener('change',updateScenario);updateScenario();
       const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
-      const target=el('input');target.type='text';target.maxLength=32;target.placeholder='Faction member to roast (optional)';
+      const target=el('input');target.type='text';target.maxLength=32;target.placeholder='Faction member to roast (optional)';target.style.cssText='display:block;width:100%;box-sizing:border-box;min-width:0;padding:10px 12px;border-radius:6px;font:inherit;background:#302a38;color:#fff;border:1px solid #786888';
+      const memberLabel=el('div','🎯 Faction member to roast (optional)');memberLabel.style.cssText='font-size:12px;font-weight:bold;margin-top:6px';
       const personality=el('select');for(const [v,label] of [['balanced','Personality: Balanced 🎭'],['wine','Wine & Song 🍷🎶'],['bot','OceBot 🤖 Beep Boop'],['romantic','Extra Romantic ❤️'],['savage','Extra Savage 🔥']]){const o=el('option',label);o.value=v;personality.append(o);}
       const intensity=el('select');for(const [v,label] of [['light','Humor: Light'],['medium','Humor: Medium'],['wild','Humor: Wild']]){const o=el('option',label);o.value=v;intensity.append(o);}
       const saved=(()=>{try{return JSON.parse(localStorage.getItem('chatiq_royal_preferences_v1')||'{}')}catch(_){return {}}})();
@@ -188,10 +205,12 @@
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
       const generate=()=>{
         const pickRoyal=arr=>arr[Math.floor(Math.random()*arr.length)];
-        const member=target.value.trim().replace(/[\\r\\n<>]/g,'').slice(0,32);
+        const member=target.value.trim().replace(/[\r\n<>]/g,'').slice(0,32);
         if(member){
-          const joke=pickRoyal(royalMemberRoasts)(member);
-          const additions={short:[],medium:['The court applauds with cautious optimism.'],long:['The royal musicians play a suspiciously dramatic tune.','_samara_ and Oce exchange an amused glance.'],epic:['The royal musicians play a suspiciously dramatic tune.','Oce raises his goblet while _samara_ tries not to laugh.','BEEP BOOP. Royal mischief confirmed.']};
+          const roastPool=personality.value==='savage'&&intensity.value==='wild'?royalWildRoasts:personality.value==='savage'||intensity.value==='wild'?royalSavageRoasts:royalMemberRoasts;
+          const joke=pickRoyal(roastPool)(member);
+          const spicy=roastPool!==royalMemberRoasts;
+          const additions=spicy?{short:[],medium:['The entire court loses its shit.'],long:['The royal musicians play circus music.','Oce raises his wine while _samara_ laughs herself breathless.'],epic:['The royal musicians play circus music.','Oce raises his wine while _samara_ laughs herself breathless.','BEEP BOOP. Roast complete. Dignity not recoverable.']}:{short:[],medium:['The court applauds with cautious optimism.'],long:['The royal musicians play a suspiciously dramatic tune.','_samara_ and Oce exchange an amused glance.'],epic:['The royal musicians play a suspiciously dramatic tune.','Oce raises his goblet while _samara_ tries not to laugh.','BEEP BOOP. Royal mischief confirmed.']};
           preview.value=[joke,...(additions[length.value]||[])].join(' ');count();return;
         }
         if(personality.value==='bot'&&character.value!=='sam'){
@@ -248,7 +267,7 @@
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,rating,scenario,length,personality,intensity,target,preview,counter,note,regen,use,close);
+      panel.append(header,character,rating,scenario,length,personality,intensity,memberLabel,target,preview,counter,note,regen,use,close);
       document.body.append(panel);generate();
     }
 
