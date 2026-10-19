@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.5
+// @version      0.1.6
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.5';
+    const VERSION = '0.1.6';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -46,10 +46,10 @@
       const panel=el('div',undefined,'chatiq-royal-panel');panel.id='chatiq-royal-panel';
       const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
       const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']]){const o=el('option',label);o.value=value;character.append(o);}
-      const rating=el('select');for(const [value,label] of [['clean','PG-13'],['adult','18+ Sass'],['roast','Royal Roasts']]){const o=el('option',label);o.value=value;rating.append(o);}
+      const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts']]){const o=el('option',label);o.value=value;rating.append(o);}
       const preview=el('textarea');preview.rows=3;preview.maxLength=125;
       const note=el('div','Editable preview · 125 characters max · never sends automatically');note.style.fontSize='11px';
-      const generate=()=>{const pool=royalLines[character.value][rating.value];const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];preview.value=royalLast.slice(0,125);};
+      const generate=()=>{const lines=royalLines[character.value];const pool=rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value];const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];preview.value=royalLast.slice(0,125);};
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
