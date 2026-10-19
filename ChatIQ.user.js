@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.20
+// @version      0.1.21
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.20';
+    const VERSION = '0.1.21';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -212,14 +212,7 @@
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
       const recentKey='chatiq_royal_recent_v1';const recent=(()=>{try{return JSON.parse(localStorage.getItem(recentKey)||'[]').slice(-20)}catch(_){return []}})();const remember=message=>{recent.push(message);if(recent.length>20)recent.shift();try{localStorage.setItem(recentKey,JSON.stringify(recent))}catch(_){}};
       const dialogueScenes=[["_samara_: Oce, where is the royal wine?","Oce: I was conducting a taste test.","_samara_: On every bottle?","Oce: Beep boop. No further questions."],["_samara_: Why are you singing at midnight?","Oce: The kingdom demanded an encore.","_samara_: The kingdom was asleep!","Oce: Then I shall perform more quietly."],["_samara_: Did you forget our anniversary?","Oce: I wrote a song!","_samara_: You rhymed love with glove.","Oce: And it came from the heart."]];
-      const dramaLines={
-        jealousy:["_samara_: Who was that flirting with you?","Oce: The royal sommelier. She asked about the wine!","_samara_: Then why were you blushing?","Oce: Because I accidentally called her Your Majesty."],
-        wine:["_samara_: You drank the last bottle AGAIN?","Oce: It was a quality-control emergency.","_samara_: And the six empty glasses?","Oce: A thorough investigation requires evidence."],
-        singing:["_samara_: Who told you that you could sing?","Oce: The people demanded a concert!","_samara_: Those were cries for help.","Oce: BEEP BOOP. Critics have been muted."],
-        money:["_samara_: Explain this enormous royal expense.","Oce: I purchased a golden karaoke throne.","_samara_: WE ALREADY HAVE A THRONE!","Oce: But this one has cupholders."],
-        flirting:["_samara_: Were you flirting with the tavern keeper?","Oce: I was complimenting her excellent wine list.","_samara_: You called her your shining star.","Oce: I was reading the name of the house special!"],
-        misunderstanding:["_samara_: Why did you tell everyone we're separating?","Oce: I said we're separating the red wine from the white!","_samara_: The entire kingdom sent condolences!","Oce: Well, at least they brought gifts."]
-      };
+      const dramaLines={"jealousy":[["_samara_: Who sent you thirteen heart emojis?","Oce: The baker! They were shaped like bread!","_samara_: And why did you send fourteen back?","Oce: I was ordering extra rolls."],["_samara_: Why is a mysterious woman calling you Your Majesty?","Oce: She's the tax collector.","_samara_: You sent her roses!","Oce: I was hoping she'd forget the audit."],["_samara_: Whose lipstick is on your collar?","Oce: It's raspberry jam!","_samara_: Why is it shaped like a kiss?","Oce: The toast was very affectionate."]],"wine":[["_samara_: Where did the wedding wine go?","Oce: I rescued it from going stale.","_samara_: All forty bottles?","Oce: I'm a very dedicated husband."],["_samara_: Why is there a wine fountain in our bedroom?","Oce: You said we needed better plumbing.","_samara_: I meant the bathroom sink!","Oce: The grapes disagree."],["_samara_: You named the royal horse Cabernet?","Oce: He has a refined palate.","_samara_: He ate the tax records!","Oce: Finally, a horse who understands me."]],"singing":[["_samara_: Why are the guards wearing earplugs?","Oce: I'm rehearsing my new ballad.","_samara_: The windows cracked during the chorus!","Oce: That's called reaching the high notes."],["_samara_: Did you serenade the royal accountant?","Oce: He looked stressed.","_samara_: He resigned halfway through!","Oce: Tough crowd. Beep boop."],["_samara_: The orchestra is on strike.","Oce: Over my beautiful voice?","_samara_: Over your twelve-hour encore.","Oce: I was just getting warmed up."]],"money":[["_samara_: You spent the treasury on a singing throne?","Oce: It has surround sound.","_samara_: We can't afford dinner!","Oce: The throne sings about dinner."],["_samara_: Why does the budget say emergency glitter?","Oce: A king must sparkle.","_samara_: It cost more than the castle roof!","Oce: Then we shall glitter indoors."],["_samara_: Did you buy another royal yacht?","Oce: Technically it's a floating tavern.","_samara_: WITH OUR TAX MONEY?","Oce: The citizens get happy hour."]],"flirting":[["_samara_: You winked at the tavern keeper!","Oce: I had wine in my eye.","_samara_: BOTH eyes?","Oce: It was a generous pour."],["_samara_: Why did you call the barmaid an angel?","Oce: She found my lost wallet.","_samara_: You wrote her a sonnet!","Oce: It was a very grateful receipt."],["_samara_: You promised someone a moonlit dance?","Oce: Yes. You.","_samara_: Oh.","Oce: I accept apologies in kisses."]],"misunderstanding":[["_samara_: Why is the castle listed for sale?","Oce: I listed the spare castle-shaped cake.","_samara_: The real estate agent is downstairs!","Oce: Does he want a slice?"],["_samara_: Why did you announce our divorce?","Oce: I announced a horse!","_samara_: Everyone sent sympathy flowers!","Oce: Our horse is very popular."],["_samara_: Why is Zeus demanding an apology?","Oce: I said his thunder was loud.","_samara_: You called him a broken drum!","Oce: It was constructive criticism."]]};
       const dramaEnding={
         playful:["The couple crack up laughing. The court applauds.","Oce offers a kiss. _samara_ pretends to consider it."],
         heated:["The royal orchestra stops mid-note. Nobody dares blink.","A servant quietly removes the breakable goblets."],
@@ -251,13 +244,30 @@
           const more={short:[],medium:['Awaiting further instructions... beep boop.'],long:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.'],epic:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.','WARNING: _samara_ has overridden the royal operating system.']};
           finishRoyal([intro,...(more[length.value]||[])].join(' '));return;
         }
-        if(character.value==='couple'&&(scenario.value==='soap'||scenario.value==='argument'||dialogueCheck.checked)&&dramaTopic.value!=='surprise'){
-          const lines=dramaLines[dramaTopic.value].slice();
-          const ending=pickRoyal(dramaEnding[dramaLevel.value]);
-          if(dramaLevel.value==='heated')lines[2]='⚡ '+lines[2].toUpperCase();
-          if(dramaLevel.value==='meltdown'||dramaLevel.value==='unhinged'){lines[0]='🎭 '+lines[0].toUpperCase();lines[2]='⚡ '+lines[2].toUpperCase();}
-          if(dialogueCheck.checked){lines[3]+=' '+ending;}else{lines[3]+=' '+ending;}
-          finishRoyal(lines.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||4)).join(' '));return;
+        if(character.value==='couple'&&(scenario.value==='soap'||scenario.value==='argument'||dialogueCheck.checked)){
+          const topics=Object.keys(dramaLines);
+          const topic=dramaTopic.value==='surprise'?pickRoyal(topics):dramaTopic.value;
+          const candidates=dramaLines[topic];
+          const available=candidates.filter(x=>!recent.some(r=>r.includes(x[0])));
+          const lines=pickRoyal(available.length?available:candidates).slice();
+          const level=dramaLevel.value;
+          const humor=intensity.value;
+          const reactions={
+            light:["Oce: Darling, this is a perfectly innocent misunderstanding.","_samara_: I am going to need a very convincing explanation."],
+            medium:["Oce: For the record, my lawyer is a very nervous bard.","_samara_: Even the royal jester thinks your excuse is ridiculous."],
+            wild:["Oce: BEEP BOOP. COMMON SENSE HAS LEFT THE FUCKING KINGDOM.","_samara_: Even Zeus thinks this bullshit deserves its own disaster warning!"]
+          };
+          const reaction=pickRoyal(reactions[humor]||reactions.medium);
+          if(level==='heated')lines[2]='⚡ '+lines[2];
+          if(level==='meltdown')lines[2]='⚡ '+lines[2].toUpperCase();
+          if(level==='unhinged'){lines[0]='🎭 '+lines[0].toUpperCase();lines[2]='⚡ '+lines[2].toUpperCase();}
+          if(humor==='wild'&&level==='unhinged')lines[1]=lines[1]+' BEEP BOOP. SHITSHOW PROTOCOL ACTIVATED.';
+          const ending=pickRoyal(dramaEnding[level]);
+          const amount=({short:1,medium:2,long:3,epic:4}[length.value]||4);
+          const result=lines.slice(0,amount);
+          if(amount>=2)result[amount-1]+=' '+reaction;
+          if(amount>=3)result[amount-1]+=' '+ending;
+          finishRoyal(result.join(' '));return;
         }
         if(character.value==='couple'&&dialogueCheck.checked){const fresh=dialogueScenes.filter(x=>!recent.includes(x.join(' ')));const story=(fresh.length?fresh:dialogueScenes)[Math.floor(Math.random()*(fresh.length||dialogueScenes.length))];finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||4)).join(' '));return;}
         if(character.value==='couple'){
