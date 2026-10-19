@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.22
+// @version      0.1.23
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.22';
+    const VERSION = '0.1.23';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -246,6 +246,12 @@
         meltdown:["THUNDER CRASHES. Three courtiers faint and someone yells CUT TO COMMERCIAL!","The castle doors slam. A dramatic violin plays from nowhere."],
         unhinged:["THE CHANDELIER EXPLODES INTO CONFETTI. Oce yells BEEP BOOP and flees on a mechanical horse!","The narrator screams: NEXT TIME ON THE CROWN AND THE GODDESS! The entire kingdom demands a sequel."]
       };
+      const freshQuips={
+        sam:{light:["The goddess smiles; Olympus takes notes.","_samara_ raises an eyebrow and the court straightens up.","A divine entrance deserves a standing ovation."],medium:["_samara_ serves sarcasm with a side of royal judgment.","The goddess rolls her eyes so hard Zeus hears it.","The court nervously checks whether sarcasm is a punishable offense."],wild:["_samara_ has arrived. Hide the bullshit and polish the damn throne.","The goddess has zero patience for the kingdom's nonsense.","Olympus called to complain. _samara_ told them to get in line."]},
+        oce:{light:["Oce raises his goblet and dedicates a song to his goddess.","The king enters with wine and an excessively charming bow.","Oce's royal serenade begins before anyone can stop him."],medium:["Oce declares a wine emergency. His glass is empty.","BEEP BOOP. Royal charm activated. Coordination not included.","The king performs an encore nobody requested."],wild:["BEEP BOOP. KING.EXE HAS CRASHED INTO THE FUCKING WINE CELLAR.","Oce sings so badly the wine tries to escape its bottle.","The king declares happy hour. The treasury files a complaint."]},
+        couple:{light:["Oce steals a kiss; _samara_ steals his crown.","They smile at each other and the court quietly leaves.","Wine and divine mischief: a royal love story."],medium:["_samara_ roasts Oce. He calls it their love language.","Oce sings a ballad; the goddess demands compensation.","The court places bets on their next ridiculous argument."],wild:["_samara_: BULLSHIT DETECTED. Oce: BEEP BOOP. MARRIAGE CONFIRMED.","The goddess threatens thunder. Oce asks whether it comes with wine.","The royal marriage is a glorious, wine-soaked shitshow."]}
+      };
+      const quip=(who,level)=>{const pool=freshQuips[who][level]||freshQuips[who].medium;const fresh=pool.filter(x=>!recent.some(r=>r.includes(x)));return (fresh.length?fresh:pool)[Math.floor(Math.random()*(fresh.length||pool.length))];};
       const generate=()=>{
         const pickRoyal=arr=>arr[Math.floor(Math.random()*arr.length)];
         const member=target.value.trim().replace(/[\r\n<>]/g,'').slice(0,32);
@@ -257,6 +263,7 @@
           return message.replace(/_samara_/g,'the royal court').replace(/\bgoddess\b/gi,'queen');
         };
         const finishRoyal=(message)=>{preview.value=soloFilter(message);remember(preview.value);count();};
+        const finishSolo=(message)=>finishRoyal(message+' '+quip(who,intensity.value));
         if(member){
           const roastPool=personality.value==='savage'&&intensity.value==='wild'?royalWildRoasts:personality.value==='savage'||intensity.value==='wild'?royalSavageRoasts:royalMemberRoasts;
           let joke=pickRoyal(roastPool)(member);
@@ -266,10 +273,10 @@
           const additions=spicy?{short:[],medium:['The entire court loses its shit.'],long:['The royal musicians play circus music.','Oce raises his wine while _samara_ laughs herself breathless.'],epic:['The royal musicians play circus music.','Oce raises his wine while _samara_ laughs herself breathless.','BEEP BOOP. Roast complete. Dignity not recoverable.']}:{short:[],medium:['The court applauds with cautious optimism.'],long:['The royal musicians play a suspiciously dramatic tune.','_samara_ and Oce exchange an amused glance.'],epic:['The royal musicians play a suspiciously dramatic tune.','Oce raises his goblet while _samara_ tries not to laugh.','BEEP BOOP. Royal mischief confirmed.']};
           finishRoyal([joke,...(additions[length.value]||[])].join(' '));return;
         }
-        if(personality.value==='bot'&&character.value!=='sam'){
+        if(personality.value==='bot'&&character.value==='oce'){
           const intro=pickRoyal(royalBotLines);
           const more={short:[],medium:['Awaiting further instructions... beep boop.'],long:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.'],epic:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.','WARNING: _samara_ has overridden the royal operating system.']};
-          finishRoyal([intro,...(more[length.value]||[])].join(' '));return;
+          finishSolo([intro,...(more[length.value]||[])].join(' '));return;
         }
         if(character.value==='couple'&&(scenario.value==='soap'||scenario.value==='argument'||dialogueCheck.checked)){
           const topics=Object.keys(dramaLines);
@@ -294,7 +301,7 @@
           const result=lines.slice(0,amount);
           if(amount>=2)result[amount-1]+=' '+reaction;
           if(amount>=3)result[amount-1]+=' '+ending;
-          finishRoyal(result.join(' '));return;
+          finishRoyal(result.join(' ')+' '+quip('couple',humor));return;
         }
         if(character.value==='couple'&&dialogueCheck.checked){const fresh=dialogueScenes.filter(x=>!recent.includes(x.join(' ')));const story=(fresh.length?fresh:dialogueScenes)[Math.floor(Math.random()*(fresh.length||dialogueScenes.length))];finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||4)).join(' '));return;}
         if(character.value==='couple'){
@@ -312,14 +319,14 @@
           if(personality.value==='savage')story[2]='🔥 The couple trades such spectacular insults that the court applauds the chemistry.';
           if(intensity.value==='wild'&&rating.value!=='love')story[2]+=' The royal chaos has officially escaped containment.';
           if(scenario.value==='soap'||scenario.value==='argument')story[3]+=' '+pickRoyal(dramaEnding[dramaLevel.value]);
-          finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' '));return;
+          finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' ')+' '+quip('couple',intensity.value));return;
         }
         const lines=royalLines[character.value];const loving=rating.value==='love';const pool=loving?royalLove[character.value].short:(rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value]);
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
         if(personality.value==='wine'&&character.value==='oce')royalLast=pickRoyal(['🍷 Oce enters with a goblet raised and a song dedicated to _samara_.','🎶 The king bursts into song, invites his goddess to dance, and orders more wine.']);
         if(personality.value==='romantic')royalLast=pickRoyal(royalLove[character.value].short);
         if(personality.value==='savage')royalLast=pickRoyal(lines.roast);
-        if(length.value==='short'){finishRoyal(royalLast);return;}
+        if(length.value==='short'){finishSolo(royalLast);return;}
         const scene=loving?royalLove[character.value]:royalScenes[character.value];
         const pickScene=arr=>arr[Math.floor(Math.random()*arr.length)];
         const adult=rating.value==='adult'||(rating.value==='mixed'&&Math.random()<0.4);
@@ -329,7 +336,7 @@
           if(length.value==='long'||length.value==='epic')parts.push(pickScene(scene.finale));
           if(length.value==='epic')parts.push(pickScene(scene.buildup.filter(x=>x!==parts[1])));
           if(length.value==='medium'||length.value==='epic')parts.push(pickScene(scene.finale.filter(x=>!parts.includes(x))));
-          finishRoyal(parts.join(' '));return;
+          finishSolo(parts.join(' '));return;
         }
         const parts=[pickScene(scene.opening),pickScene(scene.buildup)];
         if(length.value==='long'||length.value==='epic'){
@@ -342,7 +349,7 @@
         if(personality.value==='romantic')parts[1]='His heart belongs to _samara_, and the whole court can see it.';
         if(personality.value==='savage'&&rating.value!=='love')parts[1]='The court braces itself for a merciless royal roast.';
         if(intensity.value==='wild'&&rating.value!=='love')parts.push('The kingdom may never recover from this glorious nonsense.');
-        finishRoyal(parts.join(' '));
+        finishSolo(parts.join(' '));
       };
       const favKey='chatiq_royal_favorites_v1';
       const getFavorites=()=>{try{const a=JSON.parse(localStorage.getItem(favKey)||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x.text==='string').slice(0,50):[]}catch(_){return []}};
