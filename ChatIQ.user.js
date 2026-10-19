@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.9
+// @version      0.1.10
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.9';
+    const VERSION = '0.1.10';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -57,13 +57,63 @@
         adult:['The king has arrived, you magnificent bastards.','Anyone objecting may take their bullshit to the dungeon.','Bow, fuckers. Royal chaos is now in session.',"Oce surveys his subjects: 'What a magnificent bunch of fuckups.'","Anyone questioning his greatness can piss off to the moat.","Even _samara_ cannot stop this glorious shitshow, and she has tried."]
       }
     };
+    const royalLove={
+      sam:{
+        short:[
+          '❤️ _samara_ arrives, and even Olympus knows her heart belongs to Oce.',
+          '💋 Your goddess is here. Oce, save me a place beside your throne.',
+          '💕 _samara_ enters. Her favorite king is still her favorite trouble.',
+          '👑 She could rule Olympus, but _samara_ chooses to stand beside Oce.',
+          '✨ _samara_ arrives with a smile reserved for one ridiculous king.'
+        ],
+        opening:[
+          '❤️ The doors of Olympus open as _samara_ enters, searching the crowd for her beloved Oce.',
+          '🌹 _samara_ steps into the kingdom with divine grace and a smile meant only for her king.',
+          '💋 A goddess crosses the heavens, not for glory, but to find the king who holds her heart.'
+        ],
+        buildup:[
+          'The noise fades when their eyes meet, and suddenly the whole kingdom feels a little warmer.',
+          'For all their teasing and royal chaos, the two of them always find their way back to each other.',
+          'Even the gods fall silent, because this kind of devotion needs no grand announcement.'
+        ],
+        finale:[
+          'Oce, my love, even eternity would be sweeter with you beside me. ❤️',
+          'The throne means nothing without her favorite king holding her hand.',
+          'Let the kingdom watch: this goddess chose her king, and she chooses him again every day.'
+        ]
+      },
+      oce:{
+        short:[
+          '❤️ King Oce arrives, but his crown means nothing without _samara_.',
+          '🌹 Oce enters. His greatest treasure is the goddess who stole his heart.',
+          '👑 The king has one royal weakness: his beautiful _samara_.',
+          '💕 Oce arrives to remind his goddess that she is his favorite forever.',
+          '💋 All hail the king—and the goddess who makes him a better man.'
+        ],
+        opening:[
+          '👑 King Oce enters with all his usual grandeur, but his eyes seek only _samara_.',
+          '🌹 The castle gates open for Oce, a king whose greatest pride is the goddess beside him.',
+          '❤️ Oce returns from a thousand battles, carrying one promise for his beloved _samara_.'
+        ],
+        buildup:[
+          'The trumpets fade as he reaches for her hand, suddenly forgetting the audience entirely.',
+          'His crown may be gold, but her love is the one treasure he would never trade.',
+          'For once, even his legendary ego makes room for something greater than himself.'
+        ],
+        finale:[
+          '_samara_, my queen, every kingdom is home when you are beside me. ❤️',
+          'Long live their love, their laughter, and the beautiful chaos they create together.',
+          'He would surrender a thousand thrones before surrendering the hand of his goddess.'
+        ]
+      }
+    };
     let royalLast = '';
     function openRoyal(box,input) {
       document.getElementById('chatiq-royal-panel')?.remove();
       const panel=el('div',undefined,'chatiq-royal-panel');panel.id='chatiq-royal-panel';
       const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
       const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']]){const o=el('option',label);o.value=value;character.append(o);}
-      const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts']]){const o=el('option',label);o.value=value;rating.append(o);}
+      const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts'],['love','Loving / Romantic ❤️']]){const o=el('option',label);o.value=value;rating.append(o);}
       const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
       const preview=el('textarea');preview.rows=5;
       const counter=el('div');counter.style.cssText='font-size:12px;text-align:right;color:#d5c5eb;margin:3px 0';
@@ -72,13 +122,20 @@
       preview.addEventListener('input',count);
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
       const generate=()=>{
-        const lines=royalLines[character.value];const pool=rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value];
+        const lines=royalLines[character.value];const loving=rating.value==='love';const pool=loving?royalLove[character.value].short:(rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value]);
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
         if(length.value==='short'){preview.value=royalLast;count();return;}
-        const scene=royalScenes[character.value];
+        const scene=loving?royalLove[character.value]:royalScenes[character.value];
         const pickScene=arr=>arr[Math.floor(Math.random()*arr.length)];
         const adult=rating.value==='adult'||(rating.value==='mixed'&&Math.random()<0.4);
         const roast=rating.value==='roast'||(rating.value==='mixed'&&Math.random()<0.5);
+        if(loving){
+          const parts=[pickScene(scene.opening),pickScene(scene.buildup)];
+          if(length.value==='long'||length.value==='epic')parts.push(pickScene(scene.finale));
+          if(length.value==='epic')parts.push(pickScene(scene.buildup.filter(x=>x!==parts[1])));
+          if(length.value==='medium'||length.value==='epic')parts.push(pickScene(scene.finale.filter(x=>!parts.includes(x))));
+          preview.value=parts.join(' ');count();return;
+        }
         const parts=[pickScene(scene.opening),pickScene(scene.buildup)];
         if(length.value==='long'||length.value==='epic'){
           if(roast)parts.push(pickScene(scene.roast));
