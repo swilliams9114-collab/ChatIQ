@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.1
+// @version      0.1.2
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.1';
+    const VERSION = '0.1.2';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -26,6 +26,37 @@
     const ROOT = '[id^="public_"], [id^="faction-"], [id^="faction_"], [id^="company-"], [id^="company_"], [id^="private-"], [id^="private_"]';
     const INPUT = 'textarea, [contenteditable="true"][role="textbox"], [contenteditable="true"][class*="textarea"]';
     const rendered = new WeakMap();
+
+    // EntranceIQ: integrated royal entrance generator; manual send only.
+    const royalLines = {
+      sam: {
+        clean:['🏛️ _samara_ enters. Olympus called; apparently the mortals need supervision.','✨ The Greek goddess has arrived. Try to act like you deserve this blessing.','👑 _samara_ walks in, steals the spotlight, and leaves your dignity on the floor.'],
+        adult:['🔥 _samara_ has entered. Kneel, bitches; the goddess is feeling generous.','💋 Olympus sent its finest troublemaker. You lucky bastards are welcome.','⚡ _samara_ arrives. Behave yourselves—or at least make your bullshit entertaining.'],
+        roast:['👑 _samara_ enters. Oce, darling, your ego needs its own fucking postcode.','🏛️ The goddess arrives. Oce is still polishing his imaginary crown.','💋 _samara_ appears. Somebody tell Oce that being loud is not a royal qualification.']
+      },
+      oce: {
+        clean:['👑 King Oceileachair arrives! The peasants may now resume breathing.','⚔️ Hear ye! Oce enters, and modesty immediately leaves the kingdom.','🏰 Make way for King Oce! His ego required a separate carriage.'],
+        adult:['👑 King Oce has arrived, you magnificent bastards. Bow or be mildly inconvenienced.','⚔️ Oce storms in. His royal decree: less whining, more worshipping, fuckers.','🏰 The king enters. Yes, his ego is bigger than this entire damn faction.'],
+        roast:['👑 Oce enters. _samara_, darling, Olympus called: they want their attitude back.','⚔️ The king arrives. _samara_ may be a goddess, but she still steals my spotlight.','🏰 Oce proclaims: _samara_ is welcome, provided she stops rearranging my throne.']
+      }
+    };
+    let royalLast = '';
+    function openRoyal(box,input) {
+      document.getElementById('chatiq-royal-panel')?.remove();
+      const panel=el('div',undefined,'chatiq-royal-panel');panel.id='chatiq-royal-panel';
+      const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
+      const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']]){const o=el('option',label);o.value=value;character.append(o);}
+      const rating=el('select');for(const [value,label] of [['clean','PG-13'],['adult','18+ Sass'],['roast','Royal Roasts']]){const o=el('option',label);o.value=value;rating.append(o);}
+      const preview=el('textarea');preview.rows=3;preview.maxLength=125;
+      const note=el('div','Editable preview · 125 characters max · never sends automatically');note.style.fontSize='11px';
+      const generate=()=>{const pool=royalLines[character.value][rating.value];const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];preview.value=royalLast.slice(0,125);};
+      const regen=button('🎲 Regenerate',generate);
+      const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
+      const close=button('Close',()=>panel.remove());
+      panel.append(header,character,rating,preview,note,regen,use,close);
+      document.body.append(panel);generate();
+    }
+
     const companyTypes = ['','Hair Salon','Law Firm','Flower Shop','Car Dealership','Clothing Store','Gun Shop','Game Shop','Candle Shop','Toy Shop','Adult Novelties','Cyber Cafe','Grocery Store','Theater','Sweet Shop','Cruise Line','Television Network','','Zoo','Firework Stand','Property Broker','Furniture Store','Gas Station','Music Store','Nightclub','Pub','Gents Strip Club','Restaurant','Oil Rig','Fitness Center','Mechanic Shop','Amusement Park','Lingerie Store','Meat Warehouse','Farm','Software Corporation','Ladies Strip Club','Private Security Firm','Mining Corporation','Detective Agency','Logistics Management'];
     let timer;
     function readJSON(key, fallback) {
@@ -105,6 +136,11 @@
                 b.dataset.buttonText = String(cfg.buttonText || ''); b.style.backgroundColor = cfg.backgroundColor || '#007bff';
                 bar.append(b);
             });
+            if (kind === 'FactionChat') {
+                const royal=button('👑 Royal Entrance',()=>openRoyal(box,input));
+                royal.className='chatiq-royal-trigger';
+                bar.append(royal);
+            }
             if (!bar.children.length) continue;
             // Use the composer wrapper only if it does not also contain the chat header/history.
             const parent = input.parentElement;
@@ -274,6 +310,10 @@
     function schedule(){clearTimeout(timer);timer=setTimeout(refresh,120);}
     function start() {
         const style=el('style');style.id='ecb-fix-style';style.textContent=`
+        .chatiq-royal-trigger{background:#69418a!important;color:white!important;border:1px solid #bda1db!important}
+        #chatiq-royal-panel{position:fixed;bottom:12px;left:10px;right:10px;max-width:420px;margin:auto;z-index:2147483647;background:#25202f;color:white;border:1px solid #ae91cc;border-radius:10px;padding:12px;box-shadow:0 3px 18px #0009;font:14px Arial,sans-serif}
+        #chatiq-royal-panel select,#chatiq-royal-panel textarea{display:block;box-sizing:border-box;width:100%;margin:8px 0;padding:8px;background:#17141e;color:white;border:1px solid #777;border-radius:5px;font:16px Arial,sans-serif}
+        #chatiq-royal-panel button{margin:4px 5px 0 0;padding:8px;background:#69418a;color:white;border:0;border-radius:5px}
         .ecb-shortcuts{display:flex;flex-wrap:wrap;gap:4px;padding:4px;box-sizing:border-box;max-width:100%}
         .ecb-shortcuts button{border:0;border-radius:5px;padding:5px 8px;background:#455364;color:white;font-size:12px;cursor:pointer;touch-action:manipulation;max-width:100%;overflow:hidden;text-overflow:ellipsis}
         .ecb-shortcuts .recent{outline:2px solid #ffd700;outline-offset:-2px}.ecb-shortcuts button:disabled{opacity:.5}
