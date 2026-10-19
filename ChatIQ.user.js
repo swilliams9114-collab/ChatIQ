@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.25
+// @version      0.1.26
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.25';
+    const VERSION = '0.1.26';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -260,18 +260,22 @@
         };
         const finishRoyal=(message)=>{preview.value=soloFilter(message);remember(preview.value);count();};
         const finishSolo=(message)=>finishRoyal(message);
-        if(!member&&length.value==='epic'){
-          const stories=epicStories[who]||epicStories.sam;
+        // Honor character, rating, scenario and length before selecting a story.
+        // Epic stories are a distinct option, never a blanket override of all categories.
+        if(!member&&length.value==='epic'&&rating.value==='mixed'&&personality.value==='balanced'&&
+           (who!=='couple'||(scenario.value==='surprise'&&!dialogueCheck.checked))){
+          const stories=epicStories[who]||[];
           const fresh=stories.filter(parts=>!recent.some(entry=>entry.includes(parts[0])));
-          const chosen=pickRoyal(fresh.length?fresh:stories);
-          finishRoyal(chosen.join(' '));return;
+          if(stories.length){finishRoyal(pickRoyal(fresh.length?fresh:stories).join(' '));return;}
         }
-        if(who==='sam'&&!member){
+        // The coherent goddess scenes apply only to mixed-chaos medium/long entrances.
+        // Other ratings and personalities keep their own dedicated pools.
+        if(who==='sam'&&!member&&rating.value==='mixed'&&personality.value==='balanced'&&
+           (length.value==='medium'||length.value==='long')){
           const pool=samaraScenes[intensity.value]||samaraScenes.medium;
           const fresh=pool.filter(parts=>!recent.some(entry=>entry.includes(parts[0])));
           const story=pickRoyal(fresh.length?fresh:pool);
-          const size=({short:1,medium:2,long:3,epic:3}[length.value]||2);
-          finishRoyal(story.slice(0,size).join(' '));return;
+          finishRoyal(story.slice(0,length.value==='medium'?2:3).join(' '));return;
         }
         if(member){
           const roastPool=personality.value==='savage'&&intensity.value==='wild'?royalWildRoasts:personality.value==='savage'||intensity.value==='wild'?royalSavageRoasts:royalMemberRoasts;
