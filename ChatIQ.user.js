@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.17
+// @version      0.1.18
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.17';
+    const VERSION = '0.1.18';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -188,6 +188,7 @@
       const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce'],['couple','_samara_ + Oce — Royal Couple ❤️']]){const o=el('option',label);o.value=value;character.append(o);}
       const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts'],['love','Loving / Romantic ❤️']]){const o=el('option',label);o.value=value;rating.append(o);}
       const scenario=el('select');for(const [v,label] of [['surprise','Surprise Me 🎲'],['argument','Royal Argument ⚔️'],['power','Power Couple 👑'],['love','Hopelessly in Love ❤️'],['flirty','Flirty Chaos 💋'],['disaster','Royal Disaster 🍷'],['twist','Unexpected Plot Twist 🎶'],['soap','Royal Soap Opera 🎭'],['tavern','Tavern Night 🍻'],['olympus','Olympus Visits ⚡'],['wedding','Royal Wedding 💍'],['karaoke','Drunken Karaoke 🎤'],['bot','Bot Malfunction 🤖']]){const o=el('option',label);o.value=v;scenario.append(o);}const updateScenario=()=>{scenario.style.display=character.value==='couple'?'':'none';};character.addEventListener('change',updateScenario);updateScenario();
+      const dialogue=el('label');dialogue.style.cssText='display:flex;gap:6px;font-size:12px';const dialogueCheck=el('input');dialogueCheck.type='checkbox';dialogue.append(dialogueCheck,document.createTextNode('🎭 Dialogue Mode'));const showDialogue=()=>{dialogue.style.display=character.value==='couple'?'flex':'none'};character.addEventListener('change',showDialogue);showDialogue();
       const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
       const partner=el('label');partner.style.cssText='display:flex;align-items:center;gap:8px;font-size:12px;margin:5px 0';const partnerCheck=el('input');partnerCheck.type='checkbox';partnerCheck.checked=false;partner.append(partnerCheck,document.createTextNode('❤️ Include partner in solo entrances (optional)'));
       const updatePartner=()=>{partner.style.display=character.value==='couple'?'none':'flex';};character.addEventListener('change',updatePartner);updatePartner();
@@ -206,6 +207,8 @@
       const count=()=>{counter.textContent=preview.value.length+' characters'+(limit?' / '+limit+' reported by chat':' (chat limit unknown)');counter.style.color=limit&&preview.value.length>limit?'#ff8080':'#d5c5eb';};
       preview.addEventListener('input',count);
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
+      const recentKey='chatiq_royal_recent_v1';const recent=(()=>{try{return JSON.parse(localStorage.getItem(recentKey)||'[]').slice(-20)}catch(_){return []}})();const remember=message=>{recent.push(message);if(recent.length>20)recent.shift();try{localStorage.setItem(recentKey,JSON.stringify(recent))}catch(_){}};
+      const dialogueScenes=[["_samara_: Oce, where is the royal wine?","Oce: I was conducting a taste test.","_samara_: On every bottle?","Oce: Beep boop. No further questions."],["_samara_: Why are you singing at midnight?","Oce: The kingdom demanded an encore.","_samara_: The kingdom was asleep!","Oce: Then I shall perform more quietly."],["_samara_: Did you forget our anniversary?","Oce: I wrote a song!","_samara_: You rhymed love with glove.","Oce: And it came from the heart."]];
       const generate=()=>{
         const pickRoyal=arr=>arr[Math.floor(Math.random()*arr.length)];
         const member=target.value.trim().replace(/[\r\n<>]/g,'').slice(0,32);
@@ -216,7 +219,7 @@
           if(who==='sam')return message.replace(/\bOceileachair\b|\bOceBot\b|\bOce\b/gi,'the royal court').replace(/\bking\b/gi,'courtier');
           return message.replace(/_samara_/g,'the royal court').replace(/\bgoddess\b/gi,'queen');
         };
-        const finishRoyal=(message)=>{preview.value=soloFilter(message);count();};
+        const finishRoyal=(message)=>{preview.value=soloFilter(message);remember(preview.value);count();};
         if(member){
           const roastPool=personality.value==='savage'&&intensity.value==='wild'?royalWildRoasts:personality.value==='savage'||intensity.value==='wild'?royalSavageRoasts:royalMemberRoasts;
           let joke=pickRoyal(roastPool)(member);
@@ -231,11 +234,12 @@
           const more={short:[],medium:['Awaiting further instructions... beep boop.'],long:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.'],epic:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.','WARNING: _samara_ has overridden the royal operating system.']};
           finishRoyal([intro,...(more[length.value]||[])].join(' '));return;
         }
+        if(character.value==='couple'&&dialogueCheck.checked){const fresh=dialogueScenes.filter(x=>!recent.includes(x.join(' ')));const story=(fresh.length?fresh:dialogueScenes)[Math.floor(Math.random()*(fresh.length||dialogueScenes.length))];finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||4)).join(' '));return;}
         if(character.value==='couple'){
           const types=Object.keys(royalCoupleScenarios);
           const type=scenario.value==='surprise'?royalChoose('couple-types',types):scenario.value;
           const stories=royalCoupleScenarios[type];
-          const index=royalChoose('couple-'+type,stories.map((_,i)=>i));
+          const fresh=stories.map((_,i)=>i).filter(i=>!recent.some(r=>r.startsWith(stories[i][0])));const index=royalChoose('couple-'+type,fresh.length?fresh:stories.map((_,i)=>i));
           const story=stories[index].slice();
           if(rating.value==='adult')story[2]+=' Their flirting is getting damn shameless.';
           else if(rating.value==='roast')story[2]+=' They never miss a chance to tease each other.';
@@ -245,7 +249,7 @@
           if(personality.value==='romantic')story[2]='❤️ Through all their mischief, they choose each other, every single day.';
           if(personality.value==='savage')story[2]='🔥 The couple trades such spectacular insults that the court applauds the chemistry.';
           if(intensity.value==='wild'&&rating.value!=='love')story[2]+=' The royal chaos has officially escaped containment.';
-          preview.value=story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' ');count();return;
+          finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' '));return;
         }
         const lines=royalLines[character.value];const loving=rating.value==='love';const pool=loving?royalLove[character.value].short:(rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value]);
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
@@ -280,7 +284,7 @@
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,rating,scenario,length,partner,personality,intensity,memberLabel,target,preview,counter,note,regen,use,close);
+      panel.append(header,character,rating,scenario,dialogue,length,partner,personality,intensity,memberLabel,target,preview,counter,note,regen,use,close);
       document.body.append(panel);generate();
     }
 
