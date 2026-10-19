@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.4
+// @version      0.1.5
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.4';
+    const VERSION = '0.1.5';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -27,160 +27,33 @@
     const INPUT = 'textarea, [contenteditable="true"][role="textbox"], [contenteditable="true"][class*="textarea"]';
     const rendered = new WeakMap();
 
-    // EntranceIQ: integrated, manual-send royal entrance generator.
-    const ROYAL_KEY='chatiq-royal-options-v2';
-    const royalDefaults={character:'sam',mode:'mixed',mood:'random',roasts:true};
-    let royalSettings;
-    try{royalSettings={...royalDefaults,...JSON.parse(localStorage.getItem(ROYAL_KEY)||'{}')}}catch{royalSettings={...royalDefaults}}
-    const saveRoyal=()=>{try{localStorage.setItem(ROYAL_KEY,JSON.stringify(royalSettings))}catch{}};
-    const royalLines={
-      sam:{
-        dramatic:[
-          '🏛️ _samara_ descends from Olympus. Mortals, try not to embarrass yourselves.',
-          '⚡ Thunder rolls. _samara_ arrives. The gods have officially lost control.',
-          '👑 Bow, peasants. Your favorite Greek goddess has entered the chaos.',
-          '✨ The heavens part for _samara_. Someone fetch her throne and a cocktail.',
-          '🏛️ Olympus is missing a goddess. Torn is about to find out why.'
-        ],
-        sexy:[
-          '💋 _samara_ enters. Hearts race, crowns slip, and bad decisions follow.',
-          '🔥 The goddess has arrived. Try not to fall in love; the line is long.',
-          '✨ _samara_ walks in looking like temptation with excellent timing.',
-          '💄 One wink from _samara_ and the entire kingdom forgets its manners.'
-        ],
-        savage:[
-          '⚡ _samara_ has arrived. The standards were low; somehow you ducked.',
-          '👑 Your goddess is here. I see the circus still has no ringmaster.',
-          '🏛️ _samara_ enters. Some of you are living proof that gods make mistakes.',
-          '💅 I came, I saw, I judged. You are all underwhelming.'
-        ],
-        sarcastic:[
-          '✨ Oh good, the peasants are still unsupervised. _samara_ is here.',
-          '🏛️ _samara_ enters. Please contain your excitement. Or do not. Whatever.',
-          '👑 Your goddess has arrived. I assume the welcome parade got lost.',
-          '💋 I leave for five minutes and civilization collapses. Typical.'
-        ],
-        unhinged:[
-          '⚡ _samara_ kicked open Olympus, stole Zeus’s thunder, and came for snacks.',
-          '👑 The goddess arrives riding a flaming chariot of questionable decisions.',
-          '🏛️ _samara_ enters. Hide the wine, release the chaos, blame Oce.',
-          '🔥 Olympus issued a warning. _samara_ took it as an invitation.'
-        ],
-        roast:[
-          '👑 _samara_ arrives. Oce, your ego has requested its own private island.',
-          '💋 Oce, darling, your crown is lovely. Did it come with a personality?',
-          '🏛️ The goddess enters. Oce is still auditioning to be important.',
-          '⚡ _samara_ arrives. Someone tell Oce his throne is a folding chair.'
-        ],
-        adult:[
-          '🔥 _samara_ has entered. Kneel, bitches; Olympus sent its finest disaster.',
-          '💋 Your goddess is here. Try to keep your filthy thoughts organized.',
-          '👑 _samara_ arrives. I brought divine chaos and zero fucks to give.',
-          '⚡ The goddess has spoken: behave, you magnificent little assholes.'
-        ],
-        adultRoast:[
-          '👑 _samara_ enters. Oce, your ego is bigger than your damn kingdom.',
-          '💋 Oce, sweetheart, that crown cannot hide your royal bullshit.',
-          '🔥 _samara_ arrives. Oce can kiss the ring once he finds his dignity.',
-          '🏛️ Oce calls himself king. That is adorable as fuck.'
-        ]
+    // EntranceIQ: integrated royal entrance generator; manual send only.
+    const royalLines = {
+      sam: {
+        clean:['🏛️ _samara_ enters. Olympus called; apparently the mortals need supervision.','✨ The Greek goddess has arrived. Try to act like you deserve this blessing.','👑 _samara_ walks in, steals the spotlight, and leaves your dignity on the floor.'],
+        adult:['🔥 _samara_ has entered. Kneel, bitches; the goddess is feeling generous.','💋 Olympus sent its finest troublemaker. You lucky bastards are welcome.','⚡ _samara_ arrives. Behave yourselves—or at least make your bullshit entertaining.'],
+        roast:['👑 _samara_ enters. Oce, darling, your ego needs its own fucking postcode.','🏛️ The goddess arrives. Oce is still polishing his imaginary crown.','💋 _samara_ appears. Somebody tell Oce that being loud is not a royal qualification.']
       },
-      oce:{
-        dramatic:[
-          '👑 Hear ye! King Oceileachair arrives. The kingdom may now begin.',
-          '⚔️ The gates swing open. Oce enters with an army of unnecessary trumpets.',
-          '🏰 Behold King Oce! His majesty has graciously allowed your presence.',
-          '👑 The throne was lonely. Oce has returned to restore its magnificence.',
-          '⚔️ A royal decree: Oce has arrived. Let the peasants rejoice.'
-        ],
-        sexy:[
-          '👑 King Oce enters, handsome as ever and humble as absolutely never.',
-          '💋 Oce has arrived. Please form an orderly queue for royal admiration.',
-          '🏰 The king walks in. Hearts flutter; his reflection applauds.',
-          '⚔️ Oce arrives dressed like trouble and smelling faintly of victory.'
-        ],
-        savage:[
-          '👑 Oce arrives. The peasants are still disappointing, but he persists.',
-          '⚔️ Your king is here. Some of you have the strategic depth of a spoon.',
-          '🏰 Oce enters. Intelligence remains optional in this kingdom.',
-          '👑 Bow before Oce. Yes, even those of you with terrible opinions.'
-        ],
-        sarcastic:[
-          '👑 Oh look, the kingdom survived without Oce. Barely. You are welcome.',
-          '🏰 Oce has arrived. No need to applaud; actually, yes, please do.',
-          '⚔️ The king enters. I see nobody cleaned the royal mess. Shocking.',
-          '👑 Oce returns. Apparently excellence cannot take a day off.'
-        ],
-        unhinged:[
-          '👑 Oce rides in on a golden goose, declares war on chairs, and wins.',
-          '⚔️ The king has arrived. Release the dragons and hide the accountants.',
-          '🏰 Oce enters with seventeen trumpets and a dangerously large ego.',
-          '👑 The crown is on. The brain is optional. The royal chaos begins.'
-        ],
-        roast:[
-          '👑 Oce arrives. _samara_, Olympus called: they want their attitude back.',
-          '⚔️ The king enters. _samara_ has once again stolen the royal spotlight.',
-          '🏰 Oce declares _samara_ a menace to crowns and public order.',
-          '👑 _samara_ may be divine, but Oce still owns the bigger mirror.'
-        ],
-        adult:[
-          '👑 King Oce is here, you glorious bastards. Let the royal bullshit begin.',
-          '⚔️ Oce storms in. Bow, fuckers. His majesty has had a long day.',
-          '🏰 The king arrives with a crown, an ego, and absolutely no fucks.',
-          '👑 Oce enters. Your complaints can kiss the royal backside.'
-        ],
-        adultRoast:[
-          '👑 Oce arrives. _samara_, quit stealing my damn thunder, goddess.',
-          '⚔️ _samara_ is divine, but her attitude is a royal pain in my ass.',
-          '🏰 Oce enters. Someone tell _samara_ this is my fucking throne.',
-          '👑 _samara_ can keep Olympus. I rule this glorious shitshow.'
-        ]
+      oce: {
+        clean:['👑 King Oceileachair arrives! The peasants may now resume breathing.','⚔️ Hear ye! Oce enters, and modesty immediately leaves the kingdom.','🏰 Make way for King Oce! His ego required a separate carriage.'],
+        adult:['👑 King Oce has arrived, you magnificent bastards. Bow or be mildly inconvenienced.','⚔️ Oce storms in. His royal decree: less whining, more worshipping, fuckers.','🏰 The king enters. Yes, his ego is bigger than this entire damn faction.'],
+        roast:['👑 Oce enters. _samara_, darling, Olympus called: they want their attitude back.','⚔️ The king arrives. _samara_ may be a goddess, but she still steals my spotlight.','🏰 Oce proclaims: _samara_ is welcome, provided she stops rearranging my throne.']
       }
     };
-    let royalLast='';
-    function openRoyal(box,input){
+    let royalLast = '';
+    function openRoyal(box,input) {
       document.getElementById('chatiq-royal-panel')?.remove();
       const panel=el('div',undefined,'chatiq-royal-panel');panel.id='chatiq-royal-panel';
       const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
-      const makeSelect=(options,value)=>{const select=el('select');for(const [id,label] of options){const opt=el('option',label);opt.value=id;select.append(opt)}select.value=value;return select};
-      const character=makeSelect([['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']],royalSettings.character);
-      const mode=makeSelect([['mixed','Mixed Chaos (default)'],['adult','Adults Only 🔥'],['clean','PG-13 Only']],royalSettings.mode);
-      const mood=makeSelect([['random','Surprise Me 🎲'],['dramatic','Dramatic'],['sexy','Sexy / Flirty'],['savage','Savage'],['sarcastic','Sarcastic'],['unhinged','Unhinged']],royalSettings.mood);
-      const roastLabel=el('label');roastLabel.style.cssText='display:flex;gap:8px;align-items:center;margin:8px 0';
-      const roasts=el('input');roasts.type='checkbox';roasts.checked=royalSettings.roasts;roasts.style.width='auto';roastLabel.append(roasts,document.createTextNode('Include Royal Roasts in surprise mode'));
-      const preview=el('textarea');preview.rows=5;const chatLimit=input.maxLength>0?input.maxLength:null;
-      const count=el('div');count.style.cssText='font-size:12px;text-align:right;margin-bottom:6px';
-      const note=el('div','Editable · never sends automatically');note.style.fontSize='11px';
-      const updateCount=()=>{const n=preview.value.length;count.textContent=n+(chatLimit?' / '+chatLimit+' characters':' characters · chat limit not exposed');count.style.color=chatLimit&&n>chatLimit?'#ff8b8b':'#cbbce0'};
-      const saveOptions=()=>{royalSettings={character:character.value,mode:mode.value,mood:mood.value,roasts:roasts.checked};saveRoyal()};
-      const generate=()=>{
-        saveOptions();
-        const types=mood.value==='random'?['dramatic','sexy','savage','sarcastic','unhinged',...(roasts.checked?['roast']:[])]:[mood.value];
-        const options=[];
-        for(const type of types){
-          if(mode.value==='adult'){
-            options.push(...royalLines[character.value][type]);
-            if(type==='roast')options.push(...royalLines[character.value].adultRoast);
-            else options.push(...royalLines[character.value].adult);
-          }else options.push(...royalLines[character.value][type]);
-        }
-        const pool=options.filter(line=>line!==royalLast);
-        const candidates=pool.length?pool:options;
-        royalLast=candidates[Math.floor(Math.random()*candidates.length)];
-        preview.value=royalLast;updateCount();
-      };
+      const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']]){const o=el('option',label);o.value=value;character.append(o);}
+      const rating=el('select');for(const [value,label] of [['clean','PG-13'],['adult','18+ Sass'],['roast','Royal Roasts']]){const o=el('option',label);o.value=value;rating.append(o);}
+      const preview=el('textarea');preview.rows=3;preview.maxLength=125;
+      const note=el('div','Editable preview · 125 characters max · never sends automatically');note.style.fontSize='11px';
+      const generate=()=>{const pool=royalLines[character.value][rating.value];const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];preview.value=royalLast.slice(0,125);};
       const regen=button('🎲 Regenerate',generate);
-      const use=button('Insert into chat',()=>{
-        const message=preview.value.trim();if(!message)return;
-        if(chatLimit&&message.length>chatLimit){notice('This chat input allows '+chatLimit+' characters. Your entrance has '+message.length+'.');return}
-        const existing=input.isContentEditable?input.textContent:input.value;
-        if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;
-        try{insert(input,message,use,box);panel.remove()}catch(err){notice(err.message||String(err))}
-      });
+      const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      preview.addEventListener('input',updateCount);
-      for(const control of [character,mode,mood,roasts])control.addEventListener('change',generate);
-      panel.append(header,character,mode,mood,roastLabel,preview,count,note,regen,use,close);
+      panel.append(header,character,rating,preview,note,regen,use,close);
       document.body.append(panel);generate();
     }
 
@@ -280,7 +153,7 @@
         }
     }
     function insert(input, message, b, box) {
-        const limit = input.maxLength > 0 ? input.maxLength : Infinity;
+        const limit = input.maxLength > 0 ? input.maxLength : 125;
         if (message.length > limit) throw new Error(`Message has ${message.length} characters; this chat allows ${limit}. Shorten the template.`);
         input.focus();
         if (input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement) {
