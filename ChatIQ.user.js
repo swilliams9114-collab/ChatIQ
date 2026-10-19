@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.6
+// @version      0.1.7
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.6';
+    const VERSION = '0.1.7';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -47,13 +47,25 @@
       const header=el('div','👑 Royal Entrance · EntranceIQ');header.style.fontWeight='bold';
       const character=el('select');for(const [value,label] of [['sam','_samara_ — Greek Goddess'],['oce','Oceileachair — King Oce']]){const o=el('option',label);o.value=value;character.append(o);}
       const rating=el('select');for(const [value,label] of [['mixed','Mixed Chaos 🎲'],['clean','PG-13'],['adult','Adults Only 🔥'],['roast','Royal Roasts']]){const o=el('option',label);o.value=value;rating.append(o);}
-      const preview=el('textarea');preview.rows=3;preview.maxLength=125;
-      const note=el('div','Editable preview · 125 characters max · never sends automatically');note.style.fontSize='11px';
-      const generate=()=>{const lines=royalLines[character.value];const pool=rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value];const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];preview.value=royalLast.slice(0,125);};
+      const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
+      const preview=el('textarea');preview.rows=5;
+      const counter=el('div');counter.style.cssText='font-size:12px;text-align:right;color:#d5c5eb;margin:3px 0';
+      const limit=input.maxLength>0?input.maxLength:null;
+      const count=()=>{counter.textContent=preview.value.length+' characters'+(limit?' / '+limit+' reported by chat':' (chat limit unknown)');counter.style.color=limit&&preview.value.length>limit?'#ff8080':'#d5c5eb';};
+      preview.addEventListener('input',count);
+      const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
+      const generate=()=>{
+        const lines=royalLines[character.value];const pool=rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value];
+        const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
+        const extras=pool.filter(x=>x!==royalLast);
+        const target={short:1,medium:2,long:3,epic:5}[length.value]||1;
+        let parts=[royalLast];for(let i=1;i<target&&extras.length;i++){const idx=Math.floor(Math.random()*extras.length);parts.push(extras.splice(idx,1)[0]);}
+        preview.value=parts.join(' ');count();
+      };
       const regen=button('🎲 Regenerate',generate);
-      const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
+      const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,rating,preview,note,regen,use,close);
+      panel.append(header,character,rating,length,preview,counter,note,regen,use,close);
       document.body.append(panel);generate();
     }
 
@@ -153,7 +165,7 @@
         }
     }
     function insert(input, message, b, box) {
-        const limit = input.maxLength > 0 ? input.maxLength : 125;
+        const limit = input.maxLength > 0 ? input.maxLength : (channel(box)==='FactionChat' ? Infinity : 125);
         if (message.length > limit) throw new Error(`Message has ${message.length} characters; this chat allows ${limit}. Shorten the template.`);
         input.focus();
         if (input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement) {
