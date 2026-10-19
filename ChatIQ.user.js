@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.23
+// @version      0.1.24
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.23';
+    const VERSION = '0.1.24';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -246,12 +246,7 @@
         meltdown:["THUNDER CRASHES. Three courtiers faint and someone yells CUT TO COMMERCIAL!","The castle doors slam. A dramatic violin plays from nowhere."],
         unhinged:["THE CHANDELIER EXPLODES INTO CONFETTI. Oce yells BEEP BOOP and flees on a mechanical horse!","The narrator screams: NEXT TIME ON THE CROWN AND THE GODDESS! The entire kingdom demands a sequel."]
       };
-      const freshQuips={
-        sam:{light:["The goddess smiles; Olympus takes notes.","_samara_ raises an eyebrow and the court straightens up.","A divine entrance deserves a standing ovation."],medium:["_samara_ serves sarcasm with a side of royal judgment.","The goddess rolls her eyes so hard Zeus hears it.","The court nervously checks whether sarcasm is a punishable offense."],wild:["_samara_ has arrived. Hide the bullshit and polish the damn throne.","The goddess has zero patience for the kingdom's nonsense.","Olympus called to complain. _samara_ told them to get in line."]},
-        oce:{light:["Oce raises his goblet and dedicates a song to his goddess.","The king enters with wine and an excessively charming bow.","Oce's royal serenade begins before anyone can stop him."],medium:["Oce declares a wine emergency. His glass is empty.","BEEP BOOP. Royal charm activated. Coordination not included.","The king performs an encore nobody requested."],wild:["BEEP BOOP. KING.EXE HAS CRASHED INTO THE FUCKING WINE CELLAR.","Oce sings so badly the wine tries to escape its bottle.","The king declares happy hour. The treasury files a complaint."]},
-        couple:{light:["Oce steals a kiss; _samara_ steals his crown.","They smile at each other and the court quietly leaves.","Wine and divine mischief: a royal love story."],medium:["_samara_ roasts Oce. He calls it their love language.","Oce sings a ballad; the goddess demands compensation.","The court places bets on their next ridiculous argument."],wild:["_samara_: BULLSHIT DETECTED. Oce: BEEP BOOP. MARRIAGE CONFIRMED.","The goddess threatens thunder. Oce asks whether it comes with wine.","The royal marriage is a glorious, wine-soaked shitshow."]}
-      };
-      const quip=(who,level)=>{const pool=freshQuips[who][level]||freshQuips[who].medium;const fresh=pool.filter(x=>!recent.some(r=>r.includes(x)));return (fresh.length?fresh:pool)[Math.floor(Math.random()*(fresh.length||pool.length))];};
+      const samaraScenes={"light":[["👑 _samara_ steps into the throne room and finds the royal council arguing over who gets the best chair.","She calmly claims the throne, reminding everyone that divine seating arrangements are not up for debate.","The council bows, and the goddess rewards their sudden good sense with a smile."],["✨ The goddess arrives to discover someone has scheduled a meeting before her morning coffee.","_samara_ reschedules it for a more civilized hour and asks the servants for pastries.","Peace returns to Olympus, mostly because everyone knows better than to interrupt breakfast."],["⚡ _samara_ catches a courtier polishing her crown with a dishcloth.","She hands him the proper velvet and offers a surprisingly patient lesson in royal etiquette.","The crown sparkles, the courtier survives, and the kingdom calls it a successful day."]],"medium":[["👑 _samara_ enters the royal council and hears another brilliant plan to fix a problem nobody has.","She asks whether the council has considered thinking before speaking. The room goes wonderfully quiet.","The minutes record her proposal as 'unexpectedly effective leadership.'"],["⚡ A messenger tells _samara_ that Zeus has demanded an explanation for her latest decree.","She sends back a note: 'Try reading it slowly this time.'","Olympus calls an emergency meeting to discuss the goddess's attitude. She declines the invitation."],["✨ _samara_ discovers the court has organized a competition to crown the most dramatic royal.","She enters without saying a word, raises one eyebrow, and wins unanimously.","The losing contestants demand a recount. She awards them a consolation tissue."]],"wild":[["👑 _samara_ storms into the throne room to find the council arguing about the official color of royal napkins.","She declares the entire debate a colossal waste of fucking time and appoints a goat as chairperson.","The goat makes its first decision in seconds. The council has never looked more replaceable."],["⚡ Zeus sends _samara_ a formal complaint about her language.","She sends it back corrected in red ink, with 'mind your own damn business' written across the top.","Olympus erupts in outrage. The goddess calls it free entertainment."],["🔥 _samara_ catches the royal jester telling everyone he could run the kingdom better.","She hands him the crown and a stack of unpaid bills. He lasts eleven minutes before begging for mercy.","The goddess takes her throne back and announces that bullshit is now taxed at double rate."]]};
       const generate=()=>{
         const pickRoyal=arr=>arr[Math.floor(Math.random()*arr.length)];
         const member=target.value.trim().replace(/[\r\n<>]/g,'').slice(0,32);
@@ -263,7 +258,14 @@
           return message.replace(/_samara_/g,'the royal court').replace(/\bgoddess\b/gi,'queen');
         };
         const finishRoyal=(message)=>{preview.value=soloFilter(message);remember(preview.value);count();};
-        const finishSolo=(message)=>finishRoyal(message+' '+quip(who,intensity.value));
+        const finishSolo=(message)=>finishRoyal(message);
+        if(who==='sam'&&!member){
+          const pool=samaraScenes[intensity.value]||samaraScenes.medium;
+          const fresh=pool.filter(parts=>!recent.some(entry=>entry.includes(parts[0])));
+          const story=pickRoyal(fresh.length?fresh:pool);
+          const size=({short:1,medium:2,long:3,epic:3}[length.value]||2);
+          finishRoyal(story.slice(0,size).join(' '));return;
+        }
         if(member){
           const roastPool=personality.value==='savage'&&intensity.value==='wild'?royalWildRoasts:personality.value==='savage'||intensity.value==='wild'?royalSavageRoasts:royalMemberRoasts;
           let joke=pickRoyal(roastPool)(member);
@@ -276,7 +278,7 @@
         if(personality.value==='bot'&&character.value==='oce'){
           const intro=pickRoyal(royalBotLines);
           const more={short:[],medium:['Awaiting further instructions... beep boop.'],long:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.'],epic:['Royal diagnostics complete: wine, song, and goddess all detected.','Initiating celebratory dance protocol.','WARNING: _samara_ has overridden the royal operating system.']};
-          finishSolo([intro,...(more[length.value]||[])].join(' '));return;
+          finishRoyal([intro,...(more[length.value]||[])].join(' '));return;
         }
         if(character.value==='couple'&&(scenario.value==='soap'||scenario.value==='argument'||dialogueCheck.checked)){
           const topics=Object.keys(dramaLines);
@@ -301,7 +303,7 @@
           const result=lines.slice(0,amount);
           if(amount>=2)result[amount-1]+=' '+reaction;
           if(amount>=3)result[amount-1]+=' '+ending;
-          finishRoyal(result.join(' ')+' '+quip('couple',humor));return;
+          finishRoyal(result.join(' '));return;
         }
         if(character.value==='couple'&&dialogueCheck.checked){const fresh=dialogueScenes.filter(x=>!recent.includes(x.join(' ')));const story=(fresh.length?fresh:dialogueScenes)[Math.floor(Math.random()*(fresh.length||dialogueScenes.length))];finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||4)).join(' '));return;}
         if(character.value==='couple'){
@@ -319,7 +321,7 @@
           if(personality.value==='savage')story[2]='🔥 The couple trades such spectacular insults that the court applauds the chemistry.';
           if(intensity.value==='wild'&&rating.value!=='love')story[2]+=' The royal chaos has officially escaped containment.';
           if(scenario.value==='soap'||scenario.value==='argument')story[3]+=' '+pickRoyal(dramaEnding[dramaLevel.value]);
-          finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' ')+' '+quip('couple',intensity.value));return;
+          finishRoyal(story.slice(0,({short:1,medium:2,long:3,epic:4}[length.value]||1)).join(' '));return;
         }
         const lines=royalLines[character.value];const loving=rating.value==='love';const pool=loving?royalLove[character.value].short:(rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value]);
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
