@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.7
+// @version      0.1.8
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.7';
+    const VERSION = '0.1.8';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -40,6 +40,23 @@
         roast:['👑 Oce enters. _samara_, darling, Olympus called: they want their attitude back.','⚔️ The king arrives. _samara_ may be a goddess, but she still steals my spotlight.','🏰 Oce proclaims: _samara_ is welcome, provided she stops rearranging my throne.']
       }
     };
+    // Scene pieces create one continuous arrival, not repeated entrances.
+    const royalScenes={
+      sam:{
+        opening:['⚡ The skies split as _samara_ descends from Olympus, looking divine and dangerously unimpressed.','🏛️ The doors swing wide and _samara_ steps through, bringing the full wrath of Olympus.','💋 A hush falls over the kingdom as _samara_ arrives, all charm, trouble, and divine confidence.'],
+        buildup:['The mortals scramble to look useful while the gods quietly take notes.','Crowns tilt, egos wobble, and the entire room remembers who actually runs this show.','Every head turns; even the thunder pauses to admire the spectacle.'],
+        roast:['Oce tries to look important, but his ego already filled the room.','Somebody remind Oce that a shiny crown is not a personality.','Oce clutches his throne like _samara_ is here to repossess it.'],
+        finale:['Now bow, darlings. Your favorite goddess has arrived.','Let the chaos begin; Olympus is officially off duty.','Behave yourselves. Or at least make your mistakes entertaining.'],
+        adult:['Oce can keep his fucking crown; _samara_ owns the spotlight.','The peasants can stop their bullshit and start applauding.','Kneel, bitches. Divine trouble has officially arrived.']
+      },
+      oce:{
+        opening:['👑 Trumpets blare as King Oceileachair strides through the castle gates, radiating entirely too much confidence.','⚔️ The royal doors burst open and Oce arrives like the kingdom has been waiting all century.','🏰 A procession of questionable grandeur announces the arrival of King Oce.'],
+        buildup:['The peasants gasp, the banners flutter, and his reflection demands an encore.','Servants rush for the throne while his ego requests a larger castle.','The kingdom holds its breath, unsure whether to cheer or seek shelter.'],
+        roast:['_samara_ rolls her eyes so hard Olympus feels the tremor.','Somewhere, _samara_ is preparing a devastating review of his entrance.','_samara_ threatens to replace his crown with a decorative flowerpot.'],
+        finale:['Bow respectfully. The king is feeling almost generous today.','Let the royal nonsense commence. Long live the king!','His majesty has spoken. Applause is strongly encouraged.'],
+        adult:['The king has arrived, you magnificent bastards.','Anyone objecting may take their bullshit to the dungeon.','Bow, fuckers. Royal chaos is now in session.']
+      }
+    };
     let royalLast = '';
     function openRoyal(box,input) {
       document.getElementById('chatiq-royal-panel')?.remove();
@@ -57,9 +74,18 @@
       const generate=()=>{
         const lines=royalLines[character.value];const pool=rating.value==='mixed'?[...lines.clean,...lines.adult,...lines.roast]:lines[rating.value];
         const choices=pool.filter(x=>x!==royalLast);royalLast=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
-        const extras=pool.filter(x=>x!==royalLast);
-        const target={short:1,medium:2,long:3,epic:5}[length.value]||1;
-        let parts=[royalLast];for(let i=1;i<target&&extras.length;i++){const idx=Math.floor(Math.random()*extras.length);parts.push(extras.splice(idx,1)[0]);}
+        if(length.value==='short'){preview.value=royalLast;count();return;}
+        const scene=royalScenes[character.value];
+        const pickScene=arr=>arr[Math.floor(Math.random()*arr.length)];
+        const adult=rating.value==='adult'||(rating.value==='mixed'&&Math.random()<0.4);
+        const roast=rating.value==='roast'||(rating.value==='mixed'&&Math.random()<0.5);
+        const parts=[pickScene(scene.opening),pickScene(scene.buildup)];
+        if(length.value==='long'||length.value==='epic'){
+          if(roast)parts.push(pickScene(scene.roast));
+          else parts.push(pickScene(scene.buildup.filter(x=>x!==parts[1])));
+        }
+        if(length.value==='epic')parts.push(adult?pickScene(scene.adult):pickScene(scene.buildup.filter(x=>x!==parts[1])));
+        parts.push(adult&&length.value==='medium'?pickScene(scene.adult):pickScene(scene.finale));
         preview.value=parts.join(' ');count();
       };
       const regen=button('🎲 Regenerate',generate);
