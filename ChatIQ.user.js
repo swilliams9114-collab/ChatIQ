@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.18
+// @version      0.1.19
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.18';
+    const VERSION = '0.1.19';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -281,10 +281,34 @@
         if(intensity.value==='wild'&&rating.value!=='love')parts.push('The kingdom may never recover from this glorious nonsense.');
         finishRoyal(parts.join(' '));
       };
+      const favKey='chatiq_royal_favorites_v1';
+      const getFavorites=()=>{try{const a=JSON.parse(localStorage.getItem(favKey)||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x.text==='string').slice(0,50):[]}catch(_){return []}};
+      const favArea=el('div');favArea.style.cssText='display:none;border:1px solid #786888;border-radius:6px;padding:6px;margin-top:5px;max-height:170px;overflow-y:auto';
+      const favToggle=button('⭐ Favorites (0)',()=>{favArea.style.display=favArea.style.display==='none'?'block':'none';renderFavorites()});
+      const renderFavorites=()=>{
+        const favorites=getFavorites();favToggle.textContent='⭐ Favorites ('+favorites.length+')';favArea.replaceChildren();
+        if(!favorites.length){favArea.append(el('div','No favorites saved yet.'));return;}
+        favorites.forEach((item,index)=>{
+          const row=el('div');row.style.cssText='padding:5px 0;border-bottom:1px solid #53475c';
+          const label=el('div',item.name);label.style.cssText='font-weight:bold;overflow-wrap:anywhere';
+          const load=button('Load',()=>{preview.value=item.text;count();});
+          const remove=button('Delete',()=>{if(!confirm('Delete this favorite?'))return;const items=getFavorites();items.splice(index,1);localStorage.setItem(favKey,JSON.stringify(items));renderFavorites()});
+          row.append(label,load,remove);favArea.append(row);
+        });
+      };
+      const favSave=button('☆ Save favorite',()=>{
+        const message=preview.value.trim();if(!message){notice('Generate or enter a message first.');return;}
+        const items=getFavorites();if(items.length>=50){notice('Favorites full (50). Delete one to save another.');return;}
+        const name=prompt('Name this favorite:','Royal entrance '+(items.length+1));if(name===null)return;
+        const title=name.trim().slice(0,60)||'Royal entrance '+(items.length+1);
+        items.unshift({name:title,text:message});
+        try{localStorage.setItem(favKey,JSON.stringify(items));renderFavorites();notice('Favorite saved!')}catch(_){notice('Unable to save favorite on this device.')}
+      });
+      renderFavorites();
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,rating,scenario,dialogue,length,partner,personality,intensity,memberLabel,target,preview,counter,note,regen,use,close);
+      panel.append(header,character,rating,scenario,dialogue,length,partner,personality,intensity,memberLabel,target,preview,counter,note,favSave,favToggle,favArea,regen,use,close);
       document.body.append(panel);generate();
     }
 
