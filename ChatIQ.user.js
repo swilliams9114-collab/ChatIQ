@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.8
+// @version      0.1.9
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.8';
+    const VERSION = '0.1.9';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -43,18 +43,18 @@
     // Scene pieces create one continuous arrival, not repeated entrances.
     const royalScenes={
       sam:{
-        opening:['⚡ The skies split as _samara_ descends from Olympus, looking divine and dangerously unimpressed.','🏛️ The doors swing wide and _samara_ steps through, bringing the full wrath of Olympus.','💋 A hush falls over the kingdom as _samara_ arrives, all charm, trouble, and divine confidence.'],
-        buildup:['The mortals scramble to look useful while the gods quietly take notes.','Crowns tilt, egos wobble, and the entire room remembers who actually runs this show.','Every head turns; even the thunder pauses to admire the spectacle.'],
-        roast:['Oce tries to look important, but his ego already filled the room.','Somebody remind Oce that a shiny crown is not a personality.','Oce clutches his throne like _samara_ is here to repossess it.'],
-        finale:['Now bow, darlings. Your favorite goddess has arrived.','Let the chaos begin; Olympus is officially off duty.','Behave yourselves. Or at least make your mistakes entertaining.'],
-        adult:['Oce can keep his fucking crown; _samara_ owns the spotlight.','The peasants can stop their bullshit and start applauding.','Kneel, bitches. Divine trouble has officially arrived.']
+        opening:['⚡ The skies split as _samara_ descends from Olympus, looking divine and dangerously unimpressed.','🏛️ The doors swing wide and _samara_ steps through, bringing the full wrath of Olympus.','💋 A hush falls over the kingdom as _samara_ arrives, all charm, trouble, and divine confidence.',"🌩️ Zeus hides: _samara_ has entered the chat.","🍷 _samara_ sweeps in from Olympus with a goblet, a smirk, and no patience.","🔥 A golden chariot screeches to a halt. _samara_ demands better company."],
+        buildup:['The mortals scramble to look useful while the gods quietly take notes.','Crowns tilt, egos wobble, and the entire room remembers who actually runs this show.','Every head turns; even the thunder pauses to admire the spectacle.',"The cherubs lose their cue cards and the peasants pretend this was rehearsed.","The room suddenly smells like expensive perfume and impending consequences.","The gods exchange nervous glances; somebody broke a divine rule."],
+        roast:['Oce tries to look important, but his ego already filled the room.','Somebody remind Oce that a shiny crown is not a personality.','Oce clutches his throne like _samara_ is here to repossess it.',"Oce insists this is his kingdom. _samara_ asks whether he kept the receipt.","Oce's ego arrives on horseback three minutes before the rest of him.","Oce tries to issue a decree; _samara_ uses it as a cocktail napkin."],
+        finale:['Now bow, darlings. Your favorite goddess has arrived.','Let the chaos begin; Olympus is officially off duty.','Behave yourselves. Or at least make your mistakes entertaining.',"Consider yourselves blessed, mildly threatened, and thoroughly entertained.","The goddess has spoken. Compliments and offerings go to the front of the line.","And that, mortals, is how you make an entrance."],
+        adult:['Oce can keep his fucking crown; _samara_ owns the spotlight.','The peasants can stop their bullshit and start applauding.','Kneel, bitches. Divine trouble has officially arrived.',"She takes one look at the chaos and declares it a spectacular fucking mess.","Oce's royal bullshit is officially beneath her divine pay grade.","One smirk later, every poor bastard in the room forgets how to behave."]
       },
       oce:{
-        opening:['👑 Trumpets blare as King Oceileachair strides through the castle gates, radiating entirely too much confidence.','⚔️ The royal doors burst open and Oce arrives like the kingdom has been waiting all century.','🏰 A procession of questionable grandeur announces the arrival of King Oce.'],
-        buildup:['The peasants gasp, the banners flutter, and his reflection demands an encore.','Servants rush for the throne while his ego requests a larger castle.','The kingdom holds its breath, unsure whether to cheer or seek shelter.'],
-        roast:['_samara_ rolls her eyes so hard Olympus feels the tremor.','Somewhere, _samara_ is preparing a devastating review of his entrance.','_samara_ threatens to replace his crown with a decorative flowerpot.'],
-        finale:['Bow respectfully. The king is feeling almost generous today.','Let the royal nonsense commence. Long live the king!','His majesty has spoken. Applause is strongly encouraged.'],
-        adult:['The king has arrived, you magnificent bastards.','Anyone objecting may take their bullshit to the dungeon.','Bow, fuckers. Royal chaos is now in session.']
+        opening:['👑 Trumpets blare as King Oceileachair strides through the castle gates, radiating entirely too much confidence.','⚔️ The royal doors burst open and Oce arrives like the kingdom has been waiting all century.','🏰 A procession of questionable grandeur announces the arrival of King Oce.',"🎺 Twelve trumpeters announce King Oce. Eleven are just there for his ego.","🦚 Oce struts through the gates like a peacock that inherited a castle.","🏰 Oce rides in atop a magnificent steed. The horse requests hazard pay."],
+        buildup:['The peasants gasp, the banners flutter, and his reflection demands an encore.','Servants rush for the throne while his ego requests a larger castle.','The kingdom holds its breath, unsure whether to cheer or seek shelter.',"The royal mirror is polished, the throne elevated, and humility nowhere to be found.","A choir sings his praises. He insists they start over with more feeling.","His cape gets caught in the doorway; the king declares it a dramatic pause."],
+        roast:['_samara_ rolls her eyes so hard Olympus feels the tremor.','Somewhere, _samara_ is preparing a devastating review of his entrance.','_samara_ threatens to replace his crown with a decorative flowerpot.',"_samara_ takes one look at the parade and asks if the circus is hiring.","_samara_ offers to polish his crown with the last shred of his dignity.","_samara_ watches the royal spectacle and requests a refund."],
+        finale:['Bow respectfully. The king is feeling almost generous today.','Let the royal nonsense commence. Long live the king!','His majesty has spoken. Applause is strongly encouraged.',"Long live the king. And whoever keeps him away from the mirrors.","His majesty accepts applause, tribute, and flattering portraits.","Let history record this as the kingdom's loudest entrance."],
+        adult:['The king has arrived, you magnificent bastards.','Anyone objecting may take their bullshit to the dungeon.','Bow, fuckers. Royal chaos is now in session.',"Oce surveys his subjects: 'What a magnificent bunch of fuckups.'","Anyone questioning his greatness can piss off to the moat.","Even _samara_ cannot stop this glorious shitshow, and she has tried."]
       }
     };
     let royalLast = '';
