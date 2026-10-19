@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.16
+// @version      0.1.17
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.16';
+    const VERSION = '0.1.17';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -538,8 +538,8 @@
     function start() {
         const style=el('style');style.id='ecb-fix-style';style.textContent=`
         .chatiq-royal-trigger{background:#69418a!important;color:white!important;border:1px solid #bda1db!important}
-        #chatiq-royal-panel{position:fixed;bottom:12px;left:10px;right:10px;max-width:420px;margin:auto;z-index:2147483647;background:#25202f;color:white;border:1px solid #ae91cc;border-radius:10px;padding:12px;box-shadow:0 3px 18px #0009;font:14px Arial,sans-serif}
-        #chatiq-royal-panel select,#chatiq-royal-panel textarea{display:block;box-sizing:border-box;width:100%;margin:8px 0;padding:8px;background:#17141e;color:white;border:1px solid #777;border-radius:5px;font:16px Arial,sans-serif}
+        #chatiq-royal-panel{position:fixed;bottom:6px;left:6px;right:6px;max-width:420px;max-height:calc(100dvh - 90px);max-height:calc(100vh - 90px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;margin:auto;z-index:2147483647;background:#25202f;color:white;border:1px solid #ae91cc;border-radius:10px;padding:9px;box-shadow:0 3px 18px #0009;font:13px Arial,sans-serif}
+        #chatiq-royal-panel select,#chatiq-royal-panel textarea{display:block;box-sizing:border-box;width:100%;margin:4px 0;padding:5px 7px;background:#17141e;color:white;border:1px solid #777;border-radius:5px;font:14px Arial,sans-serif;min-height:32px}#chatiq-royal-panel textarea{height:92px;min-height:70px;resize:vertical}#chatiq-royal-panel input[type=text]{padding:6px 8px!important;min-height:32px!important;font-size:14px!important}#chatiq-royal-panel button{font-size:13px}
         #chatiq-royal-panel button{margin:4px 5px 0 0;padding:8px;background:#69418a;color:white;border:0;border-radius:5px}
         .ecb-shortcuts{display:flex;flex-wrap:wrap;gap:4px;padding:4px;box-sizing:border-box;max-width:100%}
         .ecb-shortcuts button{border:0;border-radius:5px;padding:5px 8px;background:#455364;color:white;font-size:12px;cursor:pointer;touch-action:manipulation;max-width:100%;overflow:hidden;text-overflow:ellipsis}
