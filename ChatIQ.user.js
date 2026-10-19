@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.3
+// @version      0.1.4
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.3';
+    const VERSION = '0.1.4';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -148,10 +148,10 @@
       const mood=makeSelect([['random','Surprise Me 🎲'],['dramatic','Dramatic'],['sexy','Sexy / Flirty'],['savage','Savage'],['sarcastic','Sarcastic'],['unhinged','Unhinged']],royalSettings.mood);
       const roastLabel=el('label');roastLabel.style.cssText='display:flex;gap:8px;align-items:center;margin:8px 0';
       const roasts=el('input');roasts.type='checkbox';roasts.checked=royalSettings.roasts;roasts.style.width='auto';roastLabel.append(roasts,document.createTextNode('Include Royal Roasts in surprise mode'));
-      const preview=el('textarea');preview.rows=3;preview.maxLength=125;
+      const preview=el('textarea');preview.rows=5;const chatLimit=input.maxLength>0?input.maxLength:null;
       const count=el('div');count.style.cssText='font-size:12px;text-align:right;margin-bottom:6px';
       const note=el('div','Editable · never sends automatically');note.style.fontSize='11px';
-      const updateCount=()=>{const n=Array.from(preview.value).length;count.textContent=n+' / 125 characters';count.style.color=n>125?'#ff8b8b':'#cbbce0'};
+      const updateCount=()=>{const n=preview.value.length;count.textContent=n+(chatLimit?' / '+chatLimit+' characters':' characters · chat limit not exposed');count.style.color=chatLimit&&n>chatLimit?'#ff8b8b':'#cbbce0'};
       const saveOptions=()=>{royalSettings={character:character.value,mode:mode.value,mood:mood.value,roasts:roasts.checked};saveRoyal()};
       const generate=()=>{
         saveOptions();
@@ -172,7 +172,7 @@
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{
         const message=preview.value.trim();if(!message)return;
-        if(Array.from(message).length>125){notice('Royal Entrance must be 125 characters or less.');return}
+        if(chatLimit&&message.length>chatLimit){notice('This chat input allows '+chatLimit+' characters. Your entrance has '+message.length+'.');return}
         const existing=input.isContentEditable?input.textContent:input.value;
         if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;
         try{insert(input,message,use,box);panel.remove()}catch(err){notice(err.message||String(err))}
@@ -280,7 +280,7 @@
         }
     }
     function insert(input, message, b, box) {
-        const limit = input.maxLength > 0 ? input.maxLength : 125;
+        const limit = input.maxLength > 0 ? input.maxLength : Infinity;
         if (message.length > limit) throw new Error(`Message has ${message.length} characters; this chat allows ${limit}. Shorten the template.`);
         input.focus();
         if (input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement) {
