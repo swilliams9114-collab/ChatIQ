@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.31
+// @version      0.1.32
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.31';
+    const VERSION = '0.1.32';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -272,48 +272,6 @@
           n=>[`🎭 ${n} agrees to help Oce rehearse a surprise performance for _samara_.`,`Oce assigns ${n} the role of a dragon, complete with a ridiculous cardboard costume.`,`_samara_ walks in early and mistakes the rehearsal for a very strange royal emergency.`,`${n} receives a medal for surviving the performance. Oce is politely asked to retire from directing.`]
         ]
       };
-      // Long-form stories use one continuous narrative arc rather than unrelated jokes.
-      const grandStory=(who,member)=>{
-        const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
-        const profile={
-          sam:{name:'_samara_',title:'the goddess',entrances:['The doors of Olympus thunder open as _samara_ descends beneath a canopy of lightning.','A hush sweeps through the royal court when _samara_ steps onto the marble balcony.','The temple bells ring without anyone touching them: _samara_ has arrived.'],moods:['She surveys the assembled nobles with the calm confidence of someone who could rewrite their destinies before lunch.','A single raised eyebrow from the goddess silences a hundred arguments.','Her smile promises either a blessing or a spectacular public embarrassment.']},
-          oce:{name:'Oce',title:'the king',entrances:['A trumpet sounds three times before King Oce bursts through the palace doors carrying a goblet and an unfinished love song.','King Oce arrives in a velvet cape, humming triumphantly as his loyal musicians struggle to keep up.','The royal announcer barely finishes his introduction before Oce strides in, raising a toast to absolutely everyone.'],moods:['He declares that wine, music, and his beloved goddess are the three pillars of civilization.','He insists this entrance was rehearsed, although the musicians exchange deeply suspicious looks.','He whispers beep boop under his breath, then claims it is an ancient royal blessing.']},
-          couple:{name:'_samara_ and Oce',title:'the royal couple',entrances:['The palace gates swing wide as _samara_ and Oce make an entrance worthy of a thousand scandalized historians.','Lightning flashes over Olympus just as the goddess and her king arrive together, already debating who deserves the louder applause.','The entire royal court rises when _samara_ enters beside Oce, whose dramatic cape has somehow acquired its own orchestra.'],moods:['The goddess carries herself like destiny made flesh; Oce carries wine and an alarming amount of confidence.','One glance between them reveals a love fierce enough to survive every ridiculous argument they have ever started.','She commands the room with a look; he responds with a flourish and a suspiciously enthusiastic song.']}
-        };
-        const p=profile[who],isLove=rating.value==='love'||personality.value==='romantic',isRoast=rating.value==='roast'||personality.value==='savage',isBot=personality.value==='bot'&&who==='oce',isWine=personality.value==='wine'||who==='oce',spicy=rating.value==='adult'||(rating.value==='mixed'&&intensity.value==='wild');
-        const place=pick(['the grand throne room','the marble halls of Olympus','the royal banquet','the palace courtyard']);
-        const hook=member?member:pick(['the royal herald','the head of the palace guard','a very nervous courtier','the royal musician']);
-        const catalyst=pick([
-          `At ${place}, ${hook} announces that a supposedly flawless celebration has gone spectacularly wrong.`,
-          `Before anyone can bow, ${hook} rushes forward with news of an utterly ridiculous palace emergency.`,
-          `The festivities come to an abrupt halt when ${hook} unveils a mysterious royal decree that nobody remembers approving.`,
-          `A terrible commotion erupts in ${place}, and ${hook} is somehow standing at the center of it.`
-        ]);
-        const scene=[
-          pick(p.entrances),pick(p.moods),
-          `Even the palace guards forget their instructions as the crowd parts to make way.`,
-          catalyst,
-          who==='sam'?'_samara_ demands the truth with a voice that could make Zeus reconsider his life choices.':who==='oce'?'Oce declares that every crisis can be solved with a speech, a song, or a decent bottle of wine.':'_samara_ demands an explanation while Oce volunteers to provide one, despite knowing almost nothing.',
-          `${hook} attempts an explanation so complicated that three scribes abandon their notes.`,
-          isRoast?`The royal court watches as ${p.title} dismantles that excuse with devastating precision.`:isLove?'For a brief moment, the chaos fades beneath a warmth that reminds everyone why this kingdom follows its rulers.':`Someone in the back starts applauding, apparently under the impression that this disaster is a performance.`,
-          who==='sam'?'The goddess lifts one hand and every whisper in the room dies instantly.':who==='oce'?'The king raises his goblet and announces an emergency musical intermission.':'Oce reaches for his goblet; _samara_ reaches for the last remaining shred of her patience.',
-          `The court musicians strike up a dramatic melody at precisely the wrong moment.`,
-          isBot?'Oce announces, "BEEP BOOP. ROYAL DAMAGE CONTROL PROTOCOL ACTIVATED," and immediately trips over his cape.':isWine?'A tray of wine appears, prompting an enthusiastic toast that nobody authorized.':'The palace herald attempts to restore order but accidentally makes the announcement twice.',
-          `Just when the situation seems under control, ${hook} reveals one final detail that changes everything.`,
-          isRoast?`The revelation is so embarrassing that the royal jester requests permission to take notes.`:isLove?'Instead of turning against each other, the royal pair find a reason to laugh together.':'A shocked silence falls over the room, followed by one extremely inappropriate snort of laughter.',
-          who==='sam'?'_samara_ smiles slowly, which everyone recognizes as a much more dangerous sign than shouting.':who==='oce'?'Oce straightens his crown and declares that this is all part of the entertainment.':'The goddess fixes Oce with a look; he answers with his most innocent smile.',
-          `The guards attempt to intervene, but their captain has become hopelessly invested in the spectacle.`,
-          spicy?'Someone mutters that the entire kingdom has officially lost its damn mind.':'Even the sternest council member struggles to keep a straight face.',
-          `The crowd begins chanting for a royal verdict.`,
-          who==='sam'?'With a grand sweep of her hand, _samara_ delivers a ruling nobody dares question.':who==='oce'?'Oce delivers a magnificent speech that somehow circles back to how much he adores his goddess.':'_samara_ delivers the verdict while Oce provides an unnecessarily dramatic drumroll.',
-          `${hook} accepts the outcome with the expression of someone who will never volunteer for palace duty again.`,
-          isLove?'And when the laughter fades, love remains the one thing in the kingdom that no disaster can overthrow.':isRoast?'The court erupts in laughter, and the victim quietly considers changing kingdoms.':'The royal court erupts in cheers as the palace finally returns to something resembling order.',
-          who==='sam'?'Thus _samara_ takes her rightful place, leaving Olympus both awestruck and slightly terrified.':who==='oce'?'Thus King Oce claims the final bow, raises his wine, and insists the encore will be even better.':'Thus the goddess and her king reclaim their thrones, already plotting their next magnificent catastrophe.'
-        ];
-        const max=length.value==='epic'?20:length.value==='long'?12:6;
-        const indexes=max===20?scene.map((_,i)=>i):max===12?[0,1,3,4,5,6,7,9,10,12,16,19]:[0,1,3,4,6,19];
-        return indexes.map(i=>scene[i]).join(' ');
-      };
       const generate=()=>{
         const pickRoyal=arr=>arr[Math.floor(Math.random()*arr.length)];
         const member=target.value.trim().replace(/[\r\n<>]/g,'').slice(0,32);
@@ -326,12 +284,6 @@
         };
         const finishRoyal=(message)=>{preview.value=soloFilter(message);remember(preview.value);count();};
         const finishSolo=(message)=>finishRoyal(message);
-        // Grand entrances are opt-in through Long / Epic, leaving short and medium categories intact.
-        if((length.value==='long'||length.value==='epic')&&
-           !(who==='couple'&&(dialogueCheck.checked||scenario.value==='soap'||scenario.value==='argument'))&&
-           !(member&&cameoRole.value!=='roast')){
-          finishRoyal(grandStory(who,member));return;
-        }
         // Honor character, rating, scenario and length before selecting a story.
         // Epic stories are a distinct option, never a blanket override of all categories.
         if(!member&&length.value==='epic'&&rating.value==='mixed'&&personality.value==='balanced'&&
