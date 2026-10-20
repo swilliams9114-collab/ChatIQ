@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.33
+// @version      0.1.34
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.33';
+    const VERSION = '0.1.34';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -250,6 +250,121 @@
       };
       const samaraScenes={"light":[["👑 _samara_ steps into the throne room and finds the royal council arguing over who gets the best chair.","She calmly claims the throne, reminding everyone that divine seating arrangements are not up for debate.","The council bows, and the goddess rewards their sudden good sense with a smile."],["✨ The goddess arrives to discover someone has scheduled a meeting before her morning coffee.","_samara_ reschedules it for a more civilized hour and asks the servants for pastries.","Peace returns to Olympus, mostly because everyone knows better than to interrupt breakfast."],["⚡ _samara_ catches a courtier polishing her crown with a dishcloth.","She hands him the proper velvet and offers a surprisingly patient lesson in royal etiquette.","The crown sparkles, the courtier survives, and the kingdom calls it a successful day."],["👑 _samara_ arrives at court to find the royal gardener has planted roses in the throne room.","She admires the flowers but politely points out that the throne needs somewhere to stand.","The gardener moves the roses outside, and the goddess names the new garden after him."],["✨ The royal cook presents _samara_ with a cake shaped like Mount Olympus.","She asks for a slice, but the cook insists the cake is too beautiful to cut.","The goddess takes the first bite herself and declares that delicious things should never be wasted."]],"medium":[["👑 _samara_ enters the royal council and hears another brilliant plan to fix a problem nobody has.","She asks whether the council has considered thinking before speaking. The room goes wonderfully quiet.","The minutes record her proposal as 'unexpectedly effective leadership.'"],["⚡ A messenger tells _samara_ that Zeus has demanded an explanation for her latest decree.","She sends back a note: 'Try reading it slowly this time.'","Olympus calls an emergency meeting to discuss the goddess's attitude. She declines the invitation."],["✨ _samara_ discovers the court has organized a competition to crown the most dramatic royal.","She enters without saying a word, raises one eyebrow, and wins unanimously.","The losing contestants demand a recount. She awards them a consolation tissue."],["⚡ The council asks _samara_ to approve a twenty-page policy on how to ring the dinner bell.","She reads the first sentence, rings the bell herself, and announces that the policy is now complete.","The council spends the afternoon debating whether efficiency is allowed."],["👑 A courtier claims his new crown is brighter than _samara_'s.","She suggests he stand outside during the next thunderstorm and test that theory.","The courtier immediately discovers a lifelong appreciation for modest jewelry."]],"wild":[["👑 _samara_ storms into the throne room to find the council arguing about the official color of royal napkins.","She declares the entire debate a colossal waste of fucking time and appoints a goat as chairperson.","The goat makes its first decision in seconds. The council has never looked more replaceable."],["⚡ Zeus sends _samara_ a formal complaint about her language.","She sends it back corrected in red ink, with 'mind your own damn business' written across the top.","Olympus erupts in outrage. The goddess calls it free entertainment."],["🔥 _samara_ catches the royal jester telling everyone he could run the kingdom better.","She hands him the crown and a stack of unpaid bills. He lasts eleven minutes before begging for mercy.","The goddess takes her throne back and announces that bullshit is now taxed at double rate."],["🔥 _samara_ learns the council has spent the treasury on a giant golden spoon.","She asks which genius plans to eat soup with it, then bills the council for wasting her damn time.","The spoon is melted into coins, and the goddess names the budget committee 'The Idiot Parade.'"],["⚡ A messenger announces that the royal jester has challenged _samara_ to a battle of insults.","She asks if he brought a second brain, because the first one clearly isn't doing shit.","The jester bows, admits defeat, and retires to a quieter profession."]]};
       const epicStories={"sam":[["👑 _samara_ arrives to discover the royal council has voted to replace her throne with a folding chair.","The council claims it is a cost-saving measure. She asks whether they have also budgeted for their own funerals.","A nervous treasurer admits the chair was Oce's idea after an especially enthusiastic wine tasting.","_samara_ makes the council sit on folding chairs for a full week while she reclaims her throne.","By sunset, the kingdom has passed a new law: never let the wine committee handle furniture."],["⚡ A thunderstorm rolls over Olympus just as _samara_ receives a complaint from Zeus about her attitude.","She sends a messenger back with a list of Zeus's own embarrassing decisions, neatly numbered.","Zeus arrives in person, furious, but discovers the entire court is selling tickets to the argument.","_samara_ offers to split the ticket profits if he agrees to stop acting like a dramatic bastard.","Zeus accepts. The goddess pockets the proceeds and calls it diplomacy."],["🔥 _samara_ walks into the palace to find a banner declaring 'ROYAL HUMILITY WEEK.'","The royal jester announces that everyone must compliment the council instead of the goddess.","_samara_ asks the jester to demonstrate humility by wearing a potato sack and apologizing to a turnip.","The court erupts in laughter as the council quietly takes down the banner.","The jester requests a transfer. The turnip is promoted to royal advisor."],["👑 _samara_ receives an invitation to judge the kingdom's first Royal Genius Contest.","The council presents a self-opening door, a waterproof umbrella, and a spoon with two handles.","She asks the inventors to demonstrate their creations; the door traps its maker and the umbrella leaks.","The goddess awards first place to the stablehand who brought a perfectly ordinary bucket.","The council protests until _samara_ reminds them that useful beats expensive bullshit every time."]],"oce":[["🍷 King Oce announces a magnificent concert to celebrate the kingdom's finest wine.","He arrives with a lute, a goblet, and absolutely no understanding of musical timing.","Halfway through his first song, the orchestra abandons him and a nearby horse begins howling in sympathy.","Oce activates BEEP BOOP performance mode and insists the horse is his new duet partner.","_samara_ applauds once, orders the wine rescued, and declares the horse the better singer."],["🤖 Oce decides the kingdom needs a robot king to improve efficiency.","He builds a cardboard helmet, says BEEP BOOP, and announces that all meetings now begin with wine.","The treasurer asks for a budget; Oce's robot voice declares ERROR: FUNDS NOT FOUND.","_samara_ unplugs his imaginary battery by confiscating the royal goblet.","The robot king immediately reboots when someone whispers 'happy hour.'"],["❤️ Oce plans a surprise romantic evening for _samara_ beneath the stars.","He recruits the royal choir, decorates the balcony, and prepares a speech he swears is not a song.","A gust of wind sends the decorations flying and the choir accidentally starts singing the tax anthem.","Oce laughs, takes _samara_'s hand, and admits that the evening is a spectacular disaster.","She kisses him anyway. The choir is permanently banned from romantic surprises."],["🍷 Oce announces that the royal wine cellar will host a prestigious tasting competition.","He appoints himself judge, musician, and official inspector of every bottle.","By the third round, he accidentally awards first prize to a jug of grape juice.","_samara_ discovers the mistake and asks whether the king can still tell his own shoes apart.","Oce bows grandly, declares the juice exquisite, and requests another glass of water."]],"couple":[["🎭 _samara_ discovers Oce has declared the palace wine cellar an independent kingdom.","Oce appoints himself emperor of the grapes and demands diplomatic recognition from his wife.","_samara_ responds by imposing a royal tax on every sip, sparking a dramatic treaty negotiation.","The two argue across a banquet table while the court watches like it's the season finale.","They sign a peace agreement over dinner. Oce pays the tax in kisses and one very expensive bottle."],["👑 The Royal Couple hosts a banquet to prove they can run one peaceful evening together.","Oce volunteers to handle music while _samara_ organizes the guests and the seating.","Oce begins an unscheduled solo; _samara_ threatens to have the orchestra arrest him for crimes against melody.","A guest mistakes their argument for live theater and the entire hall gives a standing ovation.","The couple takes a bow, sells tickets to the encore, and quietly agrees never to host a normal dinner again."],["⚡ Zeus invites _samara_ and Oce to Olympus for a supposedly civilized royal summit.","Oce brings wine as a peace offering. _samara_ brings a list of complaints and a dangerously sharp pen.","Zeus insults Oce's singing; Oce challenges him to karaoke while _samara_ demands a judging panel.","Oce belts out a ballad so terrible that Zeus accidentally throws a thunderbolt into his own throne.","_samara_ declares Oce the winner by technical knockout. The couple leaves before anyone asks for a rematch."],["🎭 _samara_ and Oce agree to spend one whole evening without arguing.","Oce prepares a romantic dinner, but accidentally invites the royal jester to provide commentary.","The jester narrates every glance and every sip of wine like a championship sporting event.","_samara_ and Oce unite to throw him out, only to realize they've successfully worked together.","They celebrate their victory with a kiss and immediately argue about who deserves the credit."]]};
+      // Hand-written long-form material only: no changes to chat detection or UI.
+      epicStories.sam.push(
+        [
+          "⚡ The clouds above Olympus turn violet as _samara_ arrives to find the palace gates locked from the inside.",
+          "A trembling guard informs her that the council has declared an emergency and banned all divine visitors.",
+          "The goddess asks whether they remember who owns the palace, the gates, and most of the thunder.",
+          "No one answers, which is wise.",
+          "Inside, the treasurer is proudly unveiling a new budget that replaces the royal throne with an office chair.",
+          "He calls it a bold modernization initiative.",
+          "_samara_ calls it the final mistake of his administrative career.",
+          "She strides through the hall, her footsteps echoing like distant storms.",
+          "The council attempts to hide behind a stack of paperwork, but a gust of wind sends every page flying.",
+          "One document reveals that the treasurer has also billed the kingdom for a golden footrest.",
+          "The goddess lifts the footrest with one finger and asks if it comes with a refund.",
+          "A clerk whispers that the refund policy expired yesterday.",
+          "For one dreadful moment, even the statues look nervous.",
+          "Then _samara_ sits on the ridiculous office chair and declares it her temporary judgment seat.",
+          "She orders the treasurer to spend the next month explaining the budget to angry peasants.",
+          "The court erupts in applause as the goddess restores the throne and announces that Olympus is once again under competent management."
+        ],
+        [
+          "👑 _samara_ enters the grand banquet hall to discover that someone has organized a competition to find a more impressive ruler.",
+          "The contestants include a knight, a merchant, a bard, and one suspiciously confident goose.",
+          "The goddess studies the sign-up sheet and asks who approved this insult to common sense.",
+          "The royal herald admits the goose was the only applicant who paid the entry fee.",
+          "The knight boasts about his sword while the merchant lists his fortune.",
+          "The bard attempts a heroic song and forgets the words before the chorus.",
+          "The goose bites the knight, steals the merchant's purse, and knocks over the bard's instrument.",
+          "_samara_ watches the destruction unfold with the expression of a woman reconsidering the entire institution of monarchy.",
+          "The judges award the goose perfect marks for initiative.",
+          "The goddess raises one eyebrow and demands a final challenge: govern the kingdom for five minutes.",
+          "The goose immediately declares war on the palace fountain.",
+          "The knight flees, the merchant requests a refund, and the bard starts writing a tragedy.",
+          "With a flick of her wrist, _samara_ restores order and silences the feathered revolutionary.",
+          "She announces that the throne is not a prize for whoever honks the loudest.",
+          "The judges unanimously reverse their decision.",
+          "The goddess reclaims her seat, and the goose is appointed Minister of Unnecessary Drama."
+        ]
+      );
+      epicStories.oce.push(
+        [
+          "🍷 The royal trumpets announce King Oce, but he arrives singing his own introduction three verses ahead of the orchestra.",
+          "His cape catches on the doorway, forcing the entire procession to stop.",
+          "Oce declares the delay a dramatic pause and orders everyone to applaud.",
+          "A servant brings him wine, which he accepts as proof that the kingdom still understands greatness.",
+          "He has gathered the court to unveil a magnificent love song dedicated to _samara_.",
+          "Unfortunately, the royal musicians have been given three completely different versions of the sheet music.",
+          "The drummer begins a battle march while the harpist plays a lullaby.",
+          "Oce insists the clash of styles is deliberate and calls it experimental romance.",
+          "He takes a heroic breath and sings a note that causes two pigeons to abandon the rafters.",
+          "The court applauds nervously.",
+          "A messenger arrives with a letter from the goddess asking whether the palace is under attack.",
+          "Oce clutches his heart and announces that even her concern is poetry.",
+          "He attempts a second verse, but the conductor quietly begs for mercy.",
+          "BEEP BOOP, says the king, pretending his royal voice requires a system reboot.",
+          "He finally abandons the performance and sends _samara_ a single rose with a handwritten apology.",
+          "The evening ends with Oce raising his goblet to love, music, and the blessed silence after his final note."
+        ],
+        [
+          "🎶 King Oce strides into the throne room with a grand plan to host the most romantic feast in royal history.",
+          "He has ordered candles, roses, velvet banners, and enough wine to alarm the treasury.",
+          "The staff exchange worried glances when he announces that he will personally supervise every detail.",
+          "His first instruction places the orchestra inside the kitchen.",
+          "His second requires the chef to present each dish while singing.",
+          "By sunset, the palace smells of burnt pastry and frightened ambition.",
+          "Oce insists that perfection takes courage and another glass of wine.",
+          "Then the centerpiece collapses, sending a tower of sugared fruit across the royal table.",
+          "A courtier slips on a pear and lands in the decorative fountain.",
+          "The king pauses, considers the wreckage, and calls it an immersive theatrical experience.",
+          "A servant gently reminds him that _samara_ was expecting a quiet dinner.",
+          "For once, Oce stops singing.",
+          "He sends the orchestra home, clears the table himself, and saves two simple plates beside the fire.",
+          "When the goddess arrives, he offers her a rose and admits that he may have overdone things.",
+          "She laughs, and the king realizes that her smile was the only grand spectacle he needed.",
+          "He lifts his goblet and whispers a toast to his favorite person, promising to keep the next surprise below the level of a national emergency."
+        ]
+      );
+      epicStories.couple.push(
+        [
+          "👑 The palace bells ring as _samara_ and Oce arrive for the annual Royal Harmony Celebration.",
+          "The goddess has prepared a dignified address, while the king has secretly booked a forty-piece orchestra.",
+          "They exchange a loving smile that lasts precisely until the first trumpet sounds.",
+          "_samara_ asks why there are musicians hiding behind the throne.",
+          "Oce claims the instruments are purely decorative.",
+          "A cymbal crashes, exposing the lie with spectacular timing.",
+          "The goddess reminds him that they agreed on a quiet ceremony.",
+          "He replies that forty musicians is quiet compared with the hundred he originally wanted.",
+          "The royal council begins placing bets on who will win the argument.",
+          "A mischievous page announces the betting totals aloud.",
+          "_samara_ turns her gaze on the council, and every wager suddenly becomes a charitable donation.",
+          "Oce, sensing danger, offers his wife a rose and an improvised apology in song.",
+          "The melody is dreadful, but his sincerity is impossible to miss.",
+          "The goddess tries to remain stern, then laughs despite herself.",
+          "She takes his hand and announces that harmony does not require silence, only someone worth listening to.",
+          "Oce kisses her hand, the orchestra finally plays in tune, and the court celebrates the most gloriously chaotic marriage in Olympus."
+        ],
+        [
+          "⚡ _samara_ and Oce enter the royal hall to discover a mysterious proclamation declaring them the kingdom's Most Dramatic Couple.",
+          "The goddess suspects a conspiracy; the king suspects a well-deserved award.",
+          "They summon the herald, who nervously explains that the title was decided by popular vote.",
+          "Oce asks whether there is a trophy.",
+          "_samara_ asks whether the voters have ever witnessed actual divine wrath.",
+          "The herald reveals that the trophy is a golden goblet engraved with both their names.",
+          "Oce falls instantly in love with it.",
+          "The goddess points out that the goblet is shaped like a screaming face.",
+          "The king calls it an artistic representation of passion.",
+          "They begin arguing over where to display it, drawing an eager crowd of courtiers.",
+          "Someone starts selling snacks.",
+          "Oce suggests placing the trophy beside his wine collection; _samara_ insists it belongs in the hall of cautionary tales.",
+          "Their debate grows so theatrical that the herald begins taking notes for next year's ceremony.",
+          "At last, the goddess declares that the goblet will be used to collect fines for unnecessary royal drama.",
+          "Oce immediately drops a coin inside and asks whether serenades count.",
+          "She kisses his cheek, says only the terrible ones, and the entire court erupts in laughter."
+        ]
+      );
       const cameoScenes={
         fool:[
           n=>[`🤡 ${n} arrives at the royal court wearing a crown made of kitchen utensils.`,`_samara_ asks whether ${n} has mistaken the throne room for a cooking competition.`,`Oce appoints ${n} royal jester on the spot, provided no one touches his wine.`,`By dinner, ${n} has accidentally entertained the entire kingdom. The goddess admits the fool has potential.`],
