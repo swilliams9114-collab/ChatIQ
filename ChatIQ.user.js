@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.35
+// @version      0.1.36
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.35';
+    const VERSION = '0.1.36';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -239,7 +239,7 @@
       const count=()=>{counter.textContent=preview.value.length+' characters'+(limit?' / '+limit+' reported by chat':' (chat limit unknown)');counter.style.color=limit&&preview.value.length>limit?'#ff8080':'#d5c5eb';};
       preview.addEventListener('input',count);
       const note=el('div','Editable preview · never sends automatically');note.style.fontSize='11px';
-      const recentKey='chatiq_royal_recent_v1';const recent=(()=>{try{return JSON.parse(localStorage.getItem(recentKey)||'[]').slice(-20)}catch(_){return []}})();const remember=message=>{recent.push(message);if(recent.length>20)recent.shift();try{localStorage.setItem(recentKey,JSON.stringify(recent))}catch(_){}};
+      const recentKey='chatiq_royal_recent_v1';const recent=(()=>{try{return JSON.parse(localStorage.getItem(recentKey)||'[]').slice(-80)}catch(_){return []}})();const remember=message=>{recent.push(message);if(recent.length>80)recent.shift();try{localStorage.setItem(recentKey,JSON.stringify(recent))}catch(_){}};const plotKey='chatiq_royal_plot_history_v1';const plotHistory=(()=>{try{return JSON.parse(localStorage.getItem(plotKey)||'[]').slice(-24)}catch(_){return []}})();const rememberPlot=id=>{plotHistory.push(id);if(plotHistory.length>24)plotHistory.shift();try{localStorage.setItem(plotKey,JSON.stringify(plotHistory))}catch(_){}};
       const dialogueScenes=[["_samara_: Oce, where is the royal wine?","Oce: I was conducting a taste test.","_samara_: On every bottle?","Oce: Beep boop. No further questions."],["_samara_: Why are you singing at midnight?","Oce: The kingdom demanded an encore.","_samara_: The kingdom was asleep!","Oce: Then I shall perform more quietly."],["_samara_: Did you forget our anniversary?","Oce: I wrote a song!","_samara_: You rhymed love with glove.","Oce: And it came from the heart."]];
       const dramaLines={"jealousy":[["_samara_: Who sent you thirteen heart emojis?","Oce: The baker! They were shaped like bread!","_samara_: And why did you send fourteen back?","Oce: I was ordering extra rolls."],["_samara_: Why is a mysterious woman calling you Your Majesty?","Oce: She's the tax collector.","_samara_: You sent her roses!","Oce: I was hoping she'd forget the audit."],["_samara_: Whose lipstick is on your collar?","Oce: It's raspberry jam!","_samara_: Why is it shaped like a kiss?","Oce: The toast was very affectionate."]],"wine":[["_samara_: Where did the wedding wine go?","Oce: I rescued it from going stale.","_samara_: All forty bottles?","Oce: I'm a very dedicated husband."],["_samara_: Why is there a wine fountain in our bedroom?","Oce: You said we needed better plumbing.","_samara_: I meant the bathroom sink!","Oce: The grapes disagree."],["_samara_: You named the royal horse Cabernet?","Oce: He has a refined palate.","_samara_: He ate the tax records!","Oce: Finally, a horse who understands me."]],"singing":[["_samara_: Why are the guards wearing earplugs?","Oce: I'm rehearsing my new ballad.","_samara_: The windows cracked during the chorus!","Oce: That's called reaching the high notes."],["_samara_: Did you serenade the royal accountant?","Oce: He looked stressed.","_samara_: He resigned halfway through!","Oce: Tough crowd. Beep boop."],["_samara_: The orchestra is on strike.","Oce: Over my beautiful voice?","_samara_: Over your twelve-hour encore.","Oce: I was just getting warmed up."]],"money":[["_samara_: You spent the treasury on a singing throne?","Oce: It has surround sound.","_samara_: We can't afford dinner!","Oce: The throne sings about dinner."],["_samara_: Why does the budget say emergency glitter?","Oce: A king must sparkle.","_samara_: It cost more than the castle roof!","Oce: Then we shall glitter indoors."],["_samara_: Did you buy another royal yacht?","Oce: Technically it's a floating tavern.","_samara_: WITH OUR TAX MONEY?","Oce: The citizens get happy hour."]],"flirting":[["_samara_: You winked at the tavern keeper!","Oce: I had wine in my eye.","_samara_: BOTH eyes?","Oce: It was a generous pour."],["_samara_: Why did you call the barmaid an angel?","Oce: She found my lost wallet.","_samara_: You wrote her a sonnet!","Oce: It was a very grateful receipt."],["_samara_: You promised someone a moonlit dance?","Oce: Yes. You.","_samara_: Oh.","Oce: I accept apologies in kisses."]],"misunderstanding":[["_samara_: Why is the castle listed for sale?","Oce: I listed the spare castle-shaped cake.","_samara_: The real estate agent is downstairs!","Oce: Does he want a slice?"],["_samara_: Why did you announce our divorce?","Oce: I announced a horse!","_samara_: Everyone sent sympathy flowers!","Oce: Our horse is very popular."],["_samara_: Why is Zeus demanding an apology?","Oce: I said his thunder was loud.","_samara_: You called him a broken drum!","Oce: It was constructive criticism."]]};
       const dramaEnding={
@@ -432,6 +432,158 @@
         "He pours the wine while she rests her head against his shoulder, their argument already becoming a favorite memory.",
         "Outside, the choir begins singing without permission, and the royal couple shout in perfect unison: NOT ANOTHER NOTE."
       ]);
+      // Each entry is a complete, separately tagged narrative; tags prevent plot/ending repeats.
+      const variedEpics={
+        sam:[
+          {id:'torn-war-medic',theme:'torn',ending:'quiet-rescue',lines:[
+            "⚡ _samara_ arrives in Torn City to find her faction's war room in complete disarray.",
+            "Three members are arguing over targets, someone has misplaced the medical supplies, and the attack list is upside down.",
+            "She demands a little order, which is brave considering the company she keeps.",
+            "A rookie admits they have no energy left and are worried they've let everyone down.",
+            "Instead of roasting them, the goddess quietly hands over supplies and explains how to prepare for the next push.",
+            "Then she turns to the veterans and asks why the rookie has more sense than the entire leadership table.",
+            "The room goes silent.",
+            "She rewrites the plan, assigns everyone a job, and gives the rookie the easiest target.",
+            "The next wave lands perfectly, and the rookie gets the final hit.",
+            "The goddess claims she planned every second of it.",
+            "A faction member points out that she accidentally wrote 'hospital' as 'hopsital' on the whiteboard.",
+            "_samara_ erases the evidence before anyone can take a screenshot.",
+            "For once, nobody gets roasted for the mistake; the rookie gets the credit and the faction gets the win."
+          ]},
+          {id:'myth-underworld-lease',theme:'myth',ending:'bureaucratic-twist',lines:[
+            "🏛️ _samara_ descends into the Underworld after receiving a notice that her name has appeared on Hades' tenant register.",
+            "She has never rented anything from Hades, especially not a damp cave with questionable plumbing.",
+            "The ferryman demands two coins for passage; she gives him one and a lecture on fraudulent service fees.",
+            "Hades greets her with a stack of contracts taller than Cerberus.",
+            "Apparently, someone forged her signature on a lease for the entire River Styx.",
+            "She checks the signature and discovers that the forger misspelled her name.",
+            "The goddess begins an investigation with the enthusiasm of someone who loves order and lives for scandal.",
+            "Cerberus leads her to a terrified minor god hiding behind a filing cabinet.",
+            "He confesses that he wanted to open a luxury riverside resort.",
+            "She makes him refund every guest and repair the riverbanks.",
+            "Hades asks whether she intends to punish the criminal with lightning.",
+            "She smiles and hands the culprit a thousand-page compliance manual instead.",
+            "By morning, the Underworld has its first functioning complaints department, and Hades is begging her to leave."
+          ]},
+          {id:'torn-bazaar-bungle',theme:'torn',ending:'self-own',lines:[
+            "🛒 _samara_ opens her Torn bazaar for a quiet afternoon of business and immediately catches someone trying to haggle over a one-dollar item.",
+            "She politely explains that the price is already lower than their dignity.",
+            "The customer sends a five-paragraph argument.",
+            "She replies with a single question mark.",
+            "Half the faction joins chat to watch the negotiation collapse.",
+            "Determined to demonstrate professional customer service, the goddess drafts a beautifully organized sales announcement.",
+            "She adds sparkles, a discount code, and a final line telling everyone to 'come grab my massive socks.'",
+            "She meant stocks.",
+            "Oce spots the typo first but says nothing.",
+            "Within minutes, the bazaar has more visitors than ever before.",
+            "She checks the message, stares at the screen, and mutters something deeply unfit for Olympus.",
+            "Then she doubles down and announces a limited-time sock sale.",
+            "The faction buys out her inventory just to keep the joke alive.",
+            "The goddess pockets the profit and decides that chaos is an acceptable marketing strategy."
+          ]}
+        ],
+        oce:[
+          {id:'torn-newbie-help',theme:'torn',ending:'warm-without-speech',lines:[
+            "🩹 King Oce notices a new faction member sitting in the Torn hospital with no supplies and a string of failed attacks.",
+            "The rookie jokes that they might as well quit.",
+            "Oce doesn't laugh.",
+            "He sends a message asking what happened, then patiently walks them through a better way to prepare.",
+            "The rookie admits they're embarrassed to ask for help.",
+            "Oce tells them that everyone starts somewhere, even kings who occasionally make spectacularly stupid decisions.",
+            "He shares what he can spare and waits while they recover.",
+            "A faction member interrupts to mock the rookie's battle stats.",
+            "Oce's reply is so sharp that the chat goes quiet.",
+            "Then he goes straight back to helping, as though nothing happened.",
+            "The rookie finally wins a fight and sends him a delighted message.",
+            "Oce responds with one word: 'Proud.'",
+            "A minute later he sends another message asking whether 'proud' has one u or two.",
+            "The rookie laughs for the first time all day."
+          ]},
+          {id:'myth-minotaur-map',theme:'myth',ending:'accidental-genius',lines:[
+            "🐂 King Oce is sent into the Minotaur's labyrinth carrying a map, a torch, and absolutely no confidence in the mapmaker.",
+            "At the first junction he discovers the map is upside down.",
+            "At the second, he finds a note reading 'definately turn left.'",
+            "He spends ten minutes insulting the spelling before realizing the note is a trap.",
+            "The Minotaur charges from the darkness.",
+            "Oce ducks behind a pillar and shouts that the creature has terrible timing.",
+            "He notices every corridor echoes differently and begins tapping the walls to find an exit.",
+            "The monster follows the noise while Oce circles behind it.",
+            "Soon the king has guided the Minotaur into a dead end without drawing his sword.",
+            "He locks the gate and calmly asks whether anyone else needs directions.",
+            "The gods arrive expecting to rescue him.",
+            "Instead, they find Oce charging admission to his newly opened labyrinth tour.",
+            "He has even corrected all the spelling on the signs."
+          ]},
+          {id:'torn-race-last',theme:'torn',ending:'unbothered-defeat',lines:[
+            "🏎️ King Oce announces that his latest Torn race will be a masterclass in speed.",
+            "He has practiced his victory speech longer than he's practiced the track.",
+            "At the starting line he notices a faction member has entered in a car held together by hope and spare parts.",
+            "He offers them some friendly advice and a thoroughly unnecessary lecture about tire pressure.",
+            "The race begins, and Oce takes the first corner beautifully.",
+            "The second corner is less beautiful.",
+            "By lap three he is behind the car held together by hope.",
+            "He tries an ambitious overtake and ends up admiring the scenery from the wrong direction.",
+            "The faction chat fills with laughing emojis.",
+            "Oce crosses the finish line last, parks carefully, and asks the winner if they want help upgrading their car.",
+            "Someone calls him a sore loser.",
+            "He replies that he lost the race, not his manners.",
+            "Then he points out that the heckler spelled 'loser' with two o's.",
+            "The argument lasts longer than the race."
+          ]}
+        ],
+        couple:[
+          {id:'torn-faction-roast',theme:'torn',ending:'third-party-wins',lines:[
+            "📱 _samara_ and King Oce log into faction chat at the same time and immediately argue over who is more useful in a ranked war.",
+            "Oce claims experience; _samara_ asks whether he means experience from the Bronze Age.",
+            "He points out that her latest attack plan contains four spelling mistakes and a suspicious drawing of a chicken.",
+            "She says the chicken is his tactical portrait.",
+            "Two faction members start taking bets on which one will rage quit first.",
+            "The couple decide to settle the dispute with a competition: whoever helps the most members before the next chain wins.",
+            "Oce quietly supplies meds while _samara_ organizes targets and encourages the rookies.",
+            "They keep interrupting each other to announce imaginary score updates.",
+            "By the end of the chain, everyone has been helped and both claim victory.",
+            "A rookie posts a spreadsheet showing the biggest contribution came from a third member who ignored the competition entirely.",
+            "Oce requests a recount.",
+            "_samara_ calls the spreadsheet an act of treason.",
+            "The rookie replies, 'You two are exhausting.'",
+            "The faction votes that the rookie has won."
+          ]},
+          {id:'myth-cerberus-sitting',theme:'myth',ending:'unexpected-pet',lines:[
+            "🐕 Hades asks _samara_ and King Oce to watch Cerberus for one afternoon while he attends a meeting.",
+            "_samara_ agrees on the condition that Oce follows the feeding schedule exactly.",
+            "Oce points out that the instructions contain the phrase 'three heads, one appetite' and asks who proofread them.",
+            "The first head wants meat, the second wants attention, and the third wants to eat the furniture.",
+            "The goddess arranges three bowls in perfect order.",
+            "Oce names the heads Trouble, More Trouble, and Steve.",
+            "Steve promptly steals his boot.",
+            "A chase breaks out through the Underworld, scattering paperwork and frightening a visiting prophet.",
+            "_samara_ is furious until she discovers that Cerberus will sit perfectly still for a belly rub.",
+            "Oce accuses her of spoiling the beast.",
+            "She points out that he has spent the last hour talking to Steve in a baby voice.",
+            "Hades returns to find the three-headed monster asleep between them.",
+            "He asks how they managed it.",
+            "The couple answer at once: 'We're keeping him.'",
+            "Hades spends the next week negotiating visitation rights."
+          ]},
+          {id:'torn-oc-misread',theme:'torn',ending:'competent-chaos',lines:[
+            "💼 _samara_ and King Oce volunteer to coordinate an organized crime with several faction members.",
+            "The goddess creates a checklist so detailed that it has its own table of contents.",
+            "Oce reads the instructions and asks why 'disguise' is spelled three different ways.",
+            "She tells him to stop proofreading and start preparing.",
+            "One teammate shows up dressed as a pizza delivery driver.",
+            "Another has brought an actual pizza.",
+            "Oce argues that the pizza is the most sensible part of the operation.",
+            "The original plan falls apart when their lookout mistakes the target for a tourist bus.",
+            "_samara_ improvises a diversion while Oce calmly gets everyone out of the wrong place.",
+            "They regroup, abandon the bad plan, and agree not to gamble the team's safety on a misunderstanding.",
+            "The faction member with the pizza asks whether this means the mission is cancelled.",
+            "Oce says yes, then offers to pay for dinner.",
+            "_samara_ sighs at the ruined schedule but admits the team handled the chaos well.",
+            "The pizza arrives with her name misspelled on the box.",
+            "Oce takes a photo before she can confiscate it."
+          ]}
+        ]
+      };
       const cameoScenes={
         fool:[
           n=>[`🤡 ${n} arrives at the royal court wearing a crown made of kitchen utensils.`,`_samara_ asks whether ${n} has mistaken the throne room for a cooking competition.`,`Oce appoints ${n} royal jester on the spot, provided no one touches his wine.`,`By dinner, ${n} has accidentally entertained the entire kingdom. The goddess admits the fool has potential.`],
@@ -470,6 +622,18 @@
         // Epic stories are a distinct option, never a blanket override of all categories.
         if(!member&&length.value==='epic'&&rating.value==='mixed'&&personality.value==='balanced'&&
            (who!=='couple'||(scenario.value==='surprise'&&!dialogueCheck.checked))){
+          const varied=variedEpics[who]||[];
+          const available=varied.filter(story=>!plotHistory.includes(story.id));
+          if(available.length){
+            const themeCounts={};
+            for(const story of varied)themeCounts[story.theme]=plotHistory.filter(id=>varied.some(item=>item.id===id&&item.theme===story.theme)).length;
+            const min=Math.min(...available.map(story=>themeCounts[story.theme]||0));
+            const balanced=available.filter(story=>(themeCounts[story.theme]||0)===min);
+            const selected=pickRoyal(balanced);
+            rememberPlot(selected.id);finishRoyal(selected.lines.join(' '));return;
+          }
+          // Once every new plot has been shown, clear its rotation without touching saved buttons.
+          if(varied.length){const selected=pickRoyal(varied);rememberPlot(selected.id);finishRoyal(selected.lines.join(' '));return;}
           const stories=epicStories[who]||[];
           const fresh=stories.filter(parts=>!recent.some(entry=>entry.includes(parts[0])));
           if(stories.length){finishRoyal(pickRoyal(fresh.length?fresh:stories).join(' '));return;}
