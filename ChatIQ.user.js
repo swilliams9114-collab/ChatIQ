@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.28
+// @version      0.1.29
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.28';
+    const VERSION = '0.1.29';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -195,6 +195,15 @@
       const length=el('select');for(const [value,label] of [['short','Short'],['medium','Medium'],['long','Long'],['epic','Epic']]){const o=el('option',label);o.value=value;length.append(o);}
       const partner=el('label');partner.style.cssText='display:flex;align-items:center;gap:8px;font-size:12px;margin:5px 0';const partnerCheck=el('input');partnerCheck.type='checkbox';partnerCheck.checked=false;partner.append(partnerCheck,document.createTextNode('❤️ Include partner in solo entrances (optional)'));
       const updatePartner=()=>{partner.style.display=character.value==='couple'?'none':'flex';};character.addEventListener('change',updatePartner);updatePartner();
+      const episodeToggle=el('label');episodeToggle.style.cssText='display:flex;align-items:center;gap:7px;font-size:12px;margin:5px 0';const episodeCheck=el('input');episodeCheck.type='checkbox';episodeToggle.append(episodeCheck,document.createTextNode('📺 Royal Episode Mode (separate from entrances)'));
+      const episodeKey='chatiq_royal_episode_v1';
+      const getEpisode=()=>{try{const n=Number(localStorage.getItem(episodeKey));return Number.isInteger(n)&&n>0?n:1}catch(_){return 1}};
+      let episodeNumber=getEpisode();
+      const episodeInfo=el('div');episodeInfo.style.cssText='font-size:12px;color:#e8cfff;margin:3px 0';
+      const updateEpisode=()=>{episodeInfo.textContent='📺 Episode '+episodeNumber+' · Regenerate previews the same episode';episodeInfo.style.display=episodeCheck.checked?'block':'none';episodeNext.style.display=episodeCheck.checked?'block':'none';episodeReset.style.display=episodeCheck.checked?'block':'none'};
+      const episodeNext=button('📺 Next episode',()=>{episodeNumber++;try{localStorage.setItem(episodeKey,String(episodeNumber))}catch(_){}updateEpisode();generate()});
+      const episodeReset=button('↩ Restart series at episode 1',()=>{if(!confirm('Restart the Royal Episode series at episode 1?'))return;episodeNumber=1;try{localStorage.setItem(episodeKey,'1')}catch(_){}updateEpisode();generate()});
+      episodeCheck.addEventListener('change',()=>{updateEpisode();generate()});
       const target=el('input');target.type='text';target.maxLength=32;target.placeholder='Faction member to roast (optional)';target.style.cssText='display:block;width:100%;box-sizing:border-box;min-width:0;padding:10px 12px;border-radius:6px;font:inherit;background:#302a38;color:#fff;border:1px solid #786888';
       const memberLabel=el('div','🎯 Faction member to roast (optional)');memberLabel.style.cssText='font-size:12px;font-weight:bold;margin-top:6px';
       const cameoRole=el('select');for(const [v,label] of [['roast','Role: Royal Roast (original)'],['fool','Role: Royal Fool 🤡'],['advisor','Role: Suspicious Advisor 📜'],['villain','Role: Royal Villain 🦹'],['bystander','Role: Innocent Bystander 😇'],['victim','Role: Unfortunate Victim 💥']]){const o=el('option',label);o.value=v;cameoRole.append(o);}
@@ -272,6 +281,20 @@
           n=>[`🎭 ${n} agrees to help Oce rehearse a surprise performance for _samara_.`,`Oce assigns ${n} the role of a dragon, complete with a ridiculous cardboard costume.`,`_samara_ walks in early and mistakes the rehearsal for a very strange royal emergency.`,`${n} receives a medal for surviving the performance. Oce is politely asked to retire from directing.`]
         ]
       };
+      const royalEpisodes=[
+        {title:'The Missing Royal Wine',setup:'Oce discovers the royal wine cellar is empty just before the annual banquet.',conflict:'_samara_ demands an explanation. Oce insists the bottles were borrowed by a mysterious midnight guest.',twist:'A palace guard reveals that Oce himself signed the loan forms while practicing his signature.',cliff:'Just as the goddess reaches for the evidence, a sealed letter arrives: THE CELLAR IS ONLY THE BEGINNING.'},
+        {title:'The Throne Room Scandal',setup:'A rumor spreads that someone plans to replace _samara_ as ruler of the palace.',conflict:'Oce promises to investigate, but his detective disguise consists of sunglasses and a wine glass.',twist:'The alleged usurper is a cardboard statue built for the royal theater.',cliff:'The statue vanishes overnight. A note on the throne reads: I SHALL RETURN.'},
+        {title:'A Very Suspicious Serenade',setup:'Oce announces a surprise concert to win back the goddess after their latest disagreement.',conflict:'_samara_ agrees to listen on one condition: no twelve-minute solos.',twist:'The orchestra accidentally plays the royal tax anthem while Oce sings a love ballad.',cliff:'The crowd erupts in applause, but a stranger in the back whispers: WAIT UNTIL THE ENCORE.'},
+        {title:'The Great Crown Caper',setup:'The royal crown disappears hours before the kingdom’s biggest celebration.',conflict:'_samara_ interrogates the council while Oce tries to calm everyone with a song.',twist:'The crown is discovered inside a cake that Oce ordered as a romantic surprise.',cliff:'Then the baker arrives carrying a second cake — and a second crown.'},
+        {title:'The Royal Trial of the Century',setup:'The palace court summons Oce to answer charges of excessive singing and reckless wine spending.',conflict:'_samara_ presides as judge while the king insists on representing himself.',twist:'Oce calls the royal horse as a character witness. The horse eats the evidence.',cliff:'The verdict is interrupted by thunder and a booming voice: ZEUS DEMANDS A RETRIAL.'},
+        {title:'Olympus Has Entered the Chat',setup:'Zeus arrives unannounced to inspect the Royal Couple’s famously chaotic kingdom.',conflict:'_samara_ refuses to let him criticize her leadership while Oce offers him a suspiciously strong goblet.',twist:'Zeus accidentally challenges Oce to karaoke and loses spectacularly.',cliff:'A messenger announces the next challenger: THE QUEEN OF THE UNDERWORLD.'}
+      ];
+      const episodeText=(n,member)=>{
+        const ep=royalEpisodes[(n-1)%royalEpisodes.length];
+        const guest=member?(' Special guest: '+member+' arrives as an unexpected witness.'):''; 
+        const recap=n>1?' Previously, royal chaos refused to stay buried.':' A new royal saga begins.';
+        return '📺 THE CROWN & THE GODDESS — EPISODE '+n+': '+ep.title+' 👑'+recap+' '+ep.setup+' '+ep.conflict+' '+ep.twist+guest+' 🎭 CLIFFHANGER: '+ep.cliff+' TO BE CONTINUED…';
+      };
       const generate=()=>{
         const pickRoyal=arr=>arr[Math.floor(Math.random()*arr.length)];
         const member=target.value.trim().replace(/[\r\n<>]/g,'').slice(0,32);
@@ -284,6 +307,7 @@
         };
         const finishRoyal=(message)=>{preview.value=soloFilter(message);remember(preview.value);count();};
         const finishSolo=(message)=>finishRoyal(message);
+        if(episodeCheck.checked){finishRoyal(episodeText(episodeNumber,member));return;}
         // Honor character, rating, scenario and length before selecting a story.
         // Epic stories are a distinct option, never a blanket override of all categories.
         if(!member&&length.value==='epic'&&rating.value==='mixed'&&personality.value==='balanced'&&
@@ -423,8 +447,8 @@
       const regen=button('🎲 Regenerate',generate);
       const use=button('Insert into chat',()=>{const message=preview.value.trim();if(!message)return;if(limit&&message.length>limit){notice('Chat reports a '+limit+' character limit; shorten the entrance.');return;}const existing=input.isContentEditable?input.textContent:input.value;if(existing?.trim()&&!confirm('Replace the existing chat message?'))return;try{insert(input,message,use,box);panel.remove();}catch(err){notice(err.message||String(err));}});
       const close=button('Close',()=>panel.remove());
-      panel.append(header,character,profileNote,rating,scenario,dialogue,dramaTopic,dramaLevel,length,partner,personality,intensity,memberLabel,target,cameoRole,preview,counter,note,favSave,favToggle,favArea,regen,use,close);
-      document.body.append(panel);generate();
+      panel.append(header,episodeToggle,episodeInfo,episodeNext,episodeReset,character,profileNote,rating,scenario,dialogue,dramaTopic,dramaLevel,length,partner,personality,intensity,memberLabel,target,cameoRole,preview,counter,note,favSave,favToggle,favArea,regen,use,close);
+      updateEpisode();document.body.append(panel);generate();
     }
 
     const companyTypes = ['','Hair Salon','Law Firm','Flower Shop','Car Dealership','Clothing Store','Gun Shop','Game Shop','Candle Shop','Toy Shop','Adult Novelties','Cyber Cafe','Grocery Store','Theater','Sweet Shop','Cruise Line','Television Network','','Zoo','Firework Stand','Property Broker','Furniture Store','Gas Station','Music Store','Nightclub','Pub','Gents Strip Club','Restaurant','Oil Rig','Fitness Center','Mechanic Shop','Amusement Park','Lingerie Store','Meat Warehouse','Farm','Software Corporation','Ladies Strip Club','Private Security Firm','Mining Corporation','Detective Agency','Logistics Management'];
