@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.32
+// @version      0.1.33
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.32';
+    const VERSION = '0.1.33';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -459,6 +459,10 @@
         for (const [prefix, kind] of [['public_trade','TradeChat'],['public_hospital','HospitalChat'],['public_global','GlobalChat'],['faction','FactionChat'],['company','CompanyChat'],['private','UserChat']]) {
             if (id === prefix || id.startsWith(prefix + '-') || id.startsWith(prefix + '_')) return kind;
         }
+        // The chatFor() wrapper can be an inner titled element rather than the channel root.
+        // Prefer the actual ancestor ID before falling back to its displayed title.
+        const factionRoot = box.closest('#faction, [id^="faction-"], [id^="faction_"]');
+        if (factionRoot && factionRoot.closest('#chatRoot')) return 'FactionChat';
         const name = title(box).toLowerCase();
         for (const [kind, label] of Object.entries(CHANNELS)) if (kind !== 'UserChat' && name === label.toLowerCase()) return kind;
         // A titled chat containing its own composer can be a private conversation.
