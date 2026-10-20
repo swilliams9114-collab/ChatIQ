@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.34
+// @version      0.1.35
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.34';
+    const VERSION = '0.1.35';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -365,6 +365,73 @@
           "She kisses his cheek, says only the terrible ones, and the entire court erupts in laughter."
         ]
       );
+      // Additional distinct, self-contained twenty-sentence epics for each established profile.
+      epicStories.sam.push([
+        "⚡ A silver storm gathers above Olympus as _samara_ arrives at a banquet being held in her honor.",
+        "The entire court bows, except for one pompous ambassador who claims he has never bowed to anyone.",
+        "The goddess pauses on the staircase and asks whether his knees are broken or merely his judgment.",
+        "He replies that his kingdom recognizes no divine authority.",
+        "She smiles, and the chandeliers flicker as though the building itself knows what comes next.",
+        "The ambassador presents a scroll listing seventeen demands for special treatment.",
+        "_samara_ reads the first, then asks a servant for a red pen.",
+        "By the seventh demand, the pen is smoking.",
+        "By the twelfth, the ambassador has begun sweating through his ceremonial robes.",
+        "The final demand insists that all guests applaud whenever he enters a room.",
+        "The goddess turns to the crowd and asks if anyone has ever heard anything so tragically desperate.",
+        "A single courtier coughs, and the sound echoes like a cannon.",
+        "She offers the ambassador a simple bargain: one honest apology in exchange for a peaceful evening.",
+        "He tries to negotiate for a smaller apology.",
+        "The thunder answers before she can.",
+        "The ambassador drops to one knee so quickly that the marble floor seems offended.",
+        "_samara_ accepts his apology with the graciousness of someone who knows she has already won.",
+        "She orders the banquet to continue and has his seventeen demands framed as a warning to future visitors.",
+        "The musicians begin playing, and even the ambassador joins the applause.",
+        "The goddess takes her throne, proving once again that true power never needs to beg for attention."
+      ]);
+      epicStories.oce.push([
+        "🍷 King Oce arrives at the royal theater beneath a shower of rose petals he personally ordered.",
+        "Tonight, he has promised _samara_ the greatest love ballad ever performed by a living monarch.",
+        "The royal orchestra waits nervously as the king adjusts his cape for the ninth time.",
+        "He announces that his voice is a gift to the kingdom, though the kingdom has not been consulted.",
+        "The curtain rises, revealing a stage crowded with candles and a mechanical moon.",
+        "Oce begins his song with surprising tenderness.",
+        "For one beautiful moment, the entire theater falls silent.",
+        "Then the mechanical moon breaks free and rolls across the stage.",
+        "The drummer dives out of its path, striking a cymbal with his forehead.",
+        "Oce refuses to stop singing because, as he explains between verses, true romance fears no machinery.",
+        "A stagehand attempts to catch the moon and accidentally releases a flock of decorative doves.",
+        "The doves settle on the king's crown as if claiming a new nesting site.",
+        "Oce raises his goblet, declares them his backup singers, and continues the chorus.",
+        "Somewhere in the audience, a courtier whispers that the performance has become a national emergency.",
+        "BEEP BOOP, Oce announces, claiming his royal charm system has entered emergency mode.",
+        "He finally spots _samara_ laughing so hard that she has tears in her eyes.",
+        "The king abandons the elaborate finale and steps to the edge of the stage.",
+        "He tells her, softly and without an orchestra, that every ridiculous thing he does is an attempt to make her smile.",
+        "The goddess blows him a kiss, and the audience erupts in genuine applause.",
+        "Oce bows beneath his feathered crown, raises his wine, and declares the evening a spectacular romantic success."
+      ]);
+      epicStories.couple.push([
+        "👑 _samara_ and Oce arrive at the Palace of a Thousand Mirrors for what was supposed to be a peaceful royal holiday.",
+        "The goddess has packed a book and requested silence; the king has packed wine and hired a traveling choir.",
+        "Their carriage stops beneath a golden archway, where a nervous steward greets them with a suspiciously long rulebook.",
+        "Rule one forbids singing after sunset.",
+        "Oce looks personally wounded.",
+        "Rule two forbids thunderstorms inside the building.",
+        "_samara_ asks whether that rule was written specifically for her.",
+        "The steward wisely refuses to answer.",
+        "By dinner, the king has discovered an acoustic hallway that makes his voice sound like an entire opera company.",
+        "He sings a love song so loudly that every mirror in the corridor begins to tremble.",
+        "The goddess appears behind him and asks whether he is trying to serenade her or declare war on the furniture.",
+        "Oce insists that romance requires commitment and excellent acoustics.",
+        "She responds that romance also requires knowing when to shut up.",
+        "The king bows theatrically and promises one full minute of silence.",
+        "Thirty seconds later, a mirror crashes in the next room and the steward runs in blaming the royal guests.",
+        "_samara_ discovers that the actual culprit is a mischievous palace cat chasing its reflection.",
+        "Oce offers to write the cat a song; the goddess threatens to book him a separate room.",
+        "They exchange a look, burst into laughter, and agree to spend the rest of the evening together by the fire.",
+        "He pours the wine while she rests her head against his shoulder, their argument already becoming a favorite memory.",
+        "Outside, the choir begins singing without permission, and the royal couple shout in perfect unison: NOT ANOTHER NOTE."
+      ]);
       const cameoScenes={
         fool:[
           n=>[`🤡 ${n} arrives at the royal court wearing a crown made of kitchen utensils.`,`_samara_ asks whether ${n} has mistaken the throne room for a cooking competition.`,`Oce appoints ${n} royal jester on the spot, provided no one touches his wine.`,`By dinner, ${n} has accidentally entertained the entire kingdom. The goddess admits the fool has potential.`],
