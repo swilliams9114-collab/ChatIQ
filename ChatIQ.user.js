@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatIQ
 // @namespace    samara.ChatIQ
-// @version      0.1.36
+// @version      0.1.37
 // @description  Custom manual chat shortcuts for TornPDA and desktop. ChatIQ Settings appear on your profile after BuyIQ.
 // @author       _samara_ [3979390]
 // @copyright    Original Enhanced Chat Buttons concept/code: Callz [2188704], Weav3r [1853324]
@@ -17,7 +17,7 @@
 (() => {
     'use strict';
     if (document.getElementById('ecb-fix-style')) return;
-    const VERSION = '0.1.36';
+    const VERSION = '0.1.37';
     // Keep legacy storage keys so existing custom shortcuts remain available.
     const CONFIG_KEY = 'chatButtonConfig';
     const OWN = '[data-ecb-owned]';
@@ -837,7 +837,8 @@
     }
     function refresh() {
         mountProfile();
-        const c = configs(); const signature = JSON.stringify(c.buttons);
+        const royalEnabled=localStorage.getItem('chatiq_royal_visible')!=='false';
+        const c = configs(); const signature = JSON.stringify(c.buttons)+'|royal:'+royalEnabled;
         for (const {box,input} of chats()) {
             const kind = channel(box); const stamp = signature + '|' + kind;
             const old = rendered.get(box);
@@ -856,7 +857,7 @@
                 b.dataset.buttonText = String(cfg.buttonText || ''); b.style.backgroundColor = cfg.backgroundColor || '#007bff';
                 bar.append(b);
             });
-            if (kind === 'FactionChat') {
+            if (kind === 'FactionChat' && royalEnabled) {
                 const royal=button('👑 Royal Entrance',()=>openRoyal(box,input));
                 royal.className='chatiq-royal-trigger';
                 bar.append(royal);
@@ -974,11 +975,13 @@
         if (!host?.isConnected) return;
         if (document.getElementById('ecb-panel')) return;
         const panel = el('div'); panel.id='ecb-panel'; panel.setAttribute('role','region'); panel.setAttribute('aria-label','ChatIQ settings');
-        panel.innerHTML = `<h3>ChatIQ</h3><div class="ecb-tabs"><button type="button" data-tab="list">Buttons</button><button type="button" data-tab="edit">Create / Edit</button><button type="button" data-tab="settings">Settings</button></div><section data-section="list"><input id="ecb-search" placeholder="Search buttons"><div id="ecb-list"></div></section><section data-section="edit" hidden><label>Button text<input id="ecb-text"></label><label>Color<input type="color" id="ecb-color" value="#007bff"></label><label>Chat<select id="ecb-condition"></select></label><label>Message<textarea id="ecb-message" rows="4"></textarea></label><small>Placeholders: {name}, {company}, {faction}, {bazaar}, {buy}. Messages are prepared for you to send manually.</small><div id="ecb-count"></div><button type="button" id="ecb-save">Add Button</button><button type="button" id="ecb-new">New Button</button></section><section data-section="settings" hidden><label>API key<input type="password" id="ecb-api" autocomplete="off"></label><label>Items to buy (comma separated)<input id="ecb-buy"></label><button type="button" id="ecb-settings-save">Save Settings</button><button type="button" id="ecb-export">Export Config</button><button type="button" id="ecb-import">Import Config</button><button type="button" id="ecb-cache">Clear API Cache</button><button type="button" id="ecb-diagnostic">Chat Diagnostics</button><textarea id="ecb-diagnostic-output" readonly hidden rows="8"></textarea></section><button type="button" id="ecb-close">Close</button>`;
+        panel.innerHTML = `<h3>ChatIQ</h3><div class="ecb-tabs"><button type="button" data-tab="list">Buttons</button><button type="button" data-tab="edit">Create / Edit</button><button type="button" data-tab="settings">Settings</button></div><section data-section="list"><input id="ecb-search" placeholder="Search buttons"><div id="ecb-list"></div></section><section data-section="edit" hidden><label>Button text<input id="ecb-text"></label><label>Color<input type="color" id="ecb-color" value="#007bff"></label><label>Chat<select id="ecb-condition"></select></label><label>Message<textarea id="ecb-message" rows="4"></textarea></label><small>Placeholders: {name}, {company}, {faction}, {bazaar}, {buy}. Messages are prepared for you to send manually.</small><div id="ecb-count"></div><button type="button" id="ecb-save">Add Button</button><button type="button" id="ecb-new">New Button</button></section><section data-section="settings" hidden><label><input type="checkbox" id="ecb-royal-visible"> Show Royal Entrance button in Faction Chat</label><label>API key<input type="password" id="ecb-api" autocomplete="off"></label><label>Items to buy (comma separated)<input id="ecb-buy"></label><button type="button" id="ecb-settings-save">Save Settings</button><button type="button" id="ecb-export">Export Config</button><button type="button" id="ecb-import">Import Config</button><button type="button" id="ecb-cache">Clear API Cache</button><button type="button" id="ecb-diagnostic">Chat Diagnostics</button><textarea id="ecb-diagnostic-output" readonly hidden rows="8"></textarea></section><button type="button" id="ecb-close">Close</button>`;
         host.append(panel); const q = s=>panel.querySelector(s); let editIndex = null;
         function tab(name) { panel.querySelectorAll('[data-section]').forEach(s=>s.hidden=s.dataset.section!==name); }
         panel.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
         for(const [kind,label] of Object.entries(CHANNELS)) { const o=el('option',label); o.value=kind; q('#ecb-condition').append(o); }
+        q('#ecb-royal-visible').checked=localStorage.getItem('chatiq_royal_visible')!=='false';
+        q('#ecb-royal-visible').onchange=()=>{if(write('chatiq_royal_visible',String(q('#ecb-royal-visible').checked))){refresh();notice(q('#ecb-royal-visible').checked?'Royal Entrance shown.':'Royal Entrance hidden.');}};
         q('#ecb-api').value=localStorage.getItem('apiKey')||''; q('#ecb-buy').value=localStorage.getItem('buyItems')||'';
         function reset() { editIndex=null; q('#ecb-text').value=''; q('#ecb-message').value=''; q('#ecb-color').value='#007bff'; q('#ecb-save').textContent='Add Button'; count(); }
         function count() { q('#ecb-count').textContent=`${q('#ecb-message').value.length} template characters`; }
